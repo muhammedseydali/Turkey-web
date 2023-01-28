@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+            
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <h3 class="page-title">{{title|title}}</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'app' %}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">{{title|title}}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Header -->
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    
+                    <div class="card-body">
+                        <form action="{{url}}" method="post" class="ajax redirect">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group main_id_product">
+                                        <label for="{{ form.phone.id_for_label }}">
+                                            {{ form.phone.label }}
+
+                                            {% if form.phone.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.phone }}
+                                    </div>
+                                    <div class="form-group product_varient">
+                                        <label for="{{ form.address.id_for_label }}">
+                                            {{ form.address.label }}
+
+                                            {% if form.address.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.address }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ form.whatsapp.id_for_label }}">
+                                            {{ form.whatsapp.label }}
+
+                                            {% if form.whatsapp.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.whatsapp }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ form.instagram.id_for_label }}">
+                                            {{ form.instagram.label }}
+
+                                            {% if form.instagram.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.instagram }}
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="{{ form.facebook.id_for_label }}">
+                                            {{ form.facebook.label }}
+
+                                            {% if form.facebook.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.facebook }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ form.offer_percentage.id_for_label }}">
+                                            {{ form.offer_percentage.label }}
+
+                                            {% if form.offer_percentage.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.offer_percentage }}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="{{ form.offer_price.id_for_label }}">
+                                            {{ form.offer_price.label }}
+
+                                            {% if form.offer_price.field.required %}
+                                                <small class="star text-danger">*</small>
+                                            {% endif %}
+                                        </label>
+                                        {{ form.offer_price }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+<!-- /Page Wrapper -->
+
+{% endblock %}
+{% block static %}
+    {{ form.media }}
+    {% load static %}
+{% endblock %}

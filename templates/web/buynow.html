@@ -1,0 +1,312 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% block content %}
+<script type="text/javascript"></script>
+<div id="checkout-cart" class="container">
+    <div class="bg-color-b">
+        <div class="row">
+            <div id="content" class="col-sm-12">
+                <h1 class="heading">Buy Now</h1>
+                  <div class="panel-group" id="accordion">         
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title">Step 1: Checkout Options</h4>
+                          </div>
+                          <div class="panel-collapse collapse" id="collapse-checkout-option">
+                              <div class="panel-body"></div>
+                          </div>
+                      </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title"><a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle collapsed" aria-expanded="false">Step 2: Delivery Address <i class="fa fa-caret-down"></i></a></h4>
+                          </div>
+                          <div class="panel-collapse collapse" id="collapse-payment-address" aria-expanded="false" style="height: 0px;">
+                              <div class="panel-body">
+                                  <!-- <form class="form-horizontal"> -->
+                                      <div class="top card">
+                                          <h3>Deliver Address</h3>
+                                          {% if is_address %}
+                                          <!-- <div class="radio">
+                                              <label>
+                                              <input type="radio" name="payment_address" value="existing" checked="checked">
+                                              I want to use an existing address</label>
+                                          </div> -->
+                                          <div class="all-ser text-center" style='border:none'>
+                                              {% if active_address %}
+                                              <div class="ser-block" style="border: 1px solid #eee">
+                                                  <div class="d-inline-block">
+                                                      <input type="radio" style="width: 30px;" value="{{active_address.pk}}" checked name='deliver_address'>
+                                                      <!-- <span class="checkmark"></span> -->
+                                                  </div>
+                                                  <div class="ser-co d-inline-block text-left">
+                                                      <h5>{{active_address.name}}</h5>
+                                                      <h6>{{active_address.address}}</h6>
+                                                      <h6>{{active_address.pincode}}</h6>
+                                                  </div>
+                                              </div>
+                                              {% endif %}
+
+                                              {% for address_item in addresses %}
+                                              <div class="ser-block" style="border: 1px solid #eee">
+                                                  <div class="d-inline-block">
+                                                      <input type="radio" style="width: 30px;" value="{{address_item.pk}}" name='deliver_address' >
+                                                      <!-- <span class="checkmark"></span> -->
+                                                  </div>
+                                                  <div class="ser-co d-inline-block text-left">
+                                                      <h5>{{address_item.name}}</h5>
+                                                      <h6>{{address_item.address}}</h6>
+                                                      <h6>{{address_item.pincode}}</h6>
+                                                  </div>
+                                              </div>
+                                              {% endfor %}
+                                          </div>
+                                          {% endif %}
+                                          <div class="radio">
+                                              <label>
+                                              <input type="radio" name="payment_address" value="new">
+                                              I want to use a new address</label>
+                                          </div>
+                                      </div>
+                                      
+                                      <br>
+                                      <div id="payment-new" style="display: none;">
+                                          <form action="{% url 'customers:add_address' %}"  method="POST" class="ajax reload">
+                                              {% csrf_token %}
+                                              {{form.as_p}}
+                                              <div class="pull-right">
+                                                  <input vale='Submit' type="submit" class="btn btn-primary pull-right">
+                                              </div>
+                                          </form>
+                                      </div>
+                                  </div>
+
+                                  <!-- </form> -->
+                                  <script type="text/javascript"><!--
+                                      $('input[name=\'payment_address\']').on('change', function() {
+                                          if (this.value == 'new') {
+                                              $('#payment-existing').hide();
+                                              $('#payment-new').show();
+                                          } else {
+                                              $('#payment-existing').show();
+                                              $('#payment-new').hide();
+                                          }
+                                      });
+                                      //-->
+                                  </script>
+                              </div>
+                          </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title"><a href="#collapse-voucher" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">Step 3: Add Payement Method<i class="fa fa-caret-down"></i></a></h4>
+                          </div>
+                          <div id="collapse-voucher" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                  <label class="col-sm-2 control-label" for="input-voucher">Select A Payement Method</label>
+                                  <div class="input-group col-sm-10">
+                                      <select name="payment_type" id="id_payment_type" class="form-control">
+                                          <option value=""> --- Please Select --- </option>
+                                          <option value="cash_on_delivery">Cash On Delivery</option>
+                                      </select>
+                                  </div>
+                                  <script>
+                                      $('#id_payment_type').change(function(){
+                                          var type = $(this).val();
+                                          var url = $('#checkout').attr('href');
+                                          url = url.split('?')[0]
+                                          new_url = url + '?payment_type='+type
+                                          $('#checkout').attr('href',new_url)
+                                      });
+                                  </script>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title"><a href="#collapse-checkout-confirm" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle" aria-expanded="true">Step 4: Confirm Order <i class="fa fa-caret-down"></i></a></h4>
+                          </div>
+                          <div class="panel-collapse collapse in" id="collapse-checkout-confirm" aria-expanded="true" style="">
+                              <div class="panel-body">
+                                  <div class="table-responsive">
+                                      <table class="table table-bordered table-hover">
+                                          <thead>
+                                              <tr>
+                                                  <td class="text-left">Product Name</td>
+                                                  <td class="text-right">Variant</td>
+                                                  <td class="text-right">Brand</td>
+                                                  <td class="text-right">Quantity</td>
+                                                  <td class="text-right">MRP</td>
+                                                  <td class="text-right">GST(%)</td>
+                                                  <td class="text-right">Unit Price</td>
+                                                  <td class="text-right">Total</td>
+                                              </tr>
+                                          </thead>
+                                          <tbody>
+                                              {% for buy_now_item in buy_now_items %}
+                                              <tr 
+                                              class="final_bill">
+                                                  <td class="text-left"><a href="{% url 'web:single_product' pk=buy_now_item.product.pk %}">{{buy_now_item.product}}</a></td>
+                                                  {% if buy_now_item.product_varient %}
+                                                  <td class="text-right">{{buy_now_item.product_varient.title}}</td>
+                                                  {% else %}
+                                                  <td class="text-right">{{buy_now_item.product.unit_type}}</td>
+                                                  {% endif %}
+                                                  <td class="text-right">{{buy_now_item.product.brand}}</td>
+                                                  <td class="text-right qty">{{buy_now_item.qty}}</td>
+                                                  {% if buy_now_item.product_varient %}
+                                                  <td class="text-right mrp">{{buy_now_item.product_varient.mrp}}</td>
+                                                  {% else %}
+                                                  <td class="text-right mrp">{{buy_now_item.product.mrp}}</td>
+                                                  {% endif %}
+                                                  <td class="text-right discount" style="display: none;"></td>
+                                                  <td class="text-right">{{buy_now_item.product.gst}}</td>
+                                                  <td class="text-right unit_price">{{buy_now_item.price}}</td>
+                                                  <td class="text-right">{{buy_now_item.subtotal}}</td>
+                                              </tr>
+                                              {% endfor %}
+                                          </tbody>
+                                          <tfoot>
+                                              <tr>
+                                                  <td colspan="7" class="text-right"><strong>Total MRP:</strong></td>
+                                                  <td class="text-right total_mrp"></td>
+                                              </tr>
+                                              <tr>
+                                                  <td colspan="7" class="text-right"><strong>Discount:</strong>
+                                                  </td>
+                                                  <td class="text-right total_dicount"></td>
+                                              </tr>
+                                              <tr>
+                                                  <td colspan="7" class="text-right"><strong>Sub-Total:</strong></td>
+                                                  <td class="text-right total">{{buy_now.total}}</td>
+                                              </tr>
+                                              <tr>
+                                                  <td colspan="7" class="text-right" ><strong>Flat Shipping Rate:</strong></td>
+                                                  {% if buy_now.total >= 500 %}
+                                                  <td class="text-right delivery_charger">0</td>
+                                                    {% else %}
+                                                  <td class="text-right delivery_charger">{{charge|default:'0'}}</td>
+                                                  {% endif %}
+                                              </tr>
+                                              <tr>
+                                                  <td colspan="7" class="text-right"><strong>Grand Total:</strong></td>
+                                                  <td class="text-right check_out_tot"></td>
+                                              </tr>
+                                              <tr>
+                                                  <td colspan="7" class="text-right"><strong>You Saved Rs:</strong></td>
+                                                  <td class="text-right total_dicount"></td>
+                                              </tr>
+                                          </tfoot>
+                                      </table>
+                                  </div>
+                                  <div class="buttons">
+                                      <div class="pull-right">
+                                          <div class="pull-right"><a href="{% url 'web:checkout_buynow' %}" id="checkout" class="action-button btn btn-primary redirect">Checkout</a></div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <br />
+          
+          <script>
+              $(document).ready(function(){
+                  let delivery_charge = $('.delivery_charger').html();
+                  let total = $('.total').html();
+                  let grand_total = parseFloat(total);
+                    if (total >= 500){
+                        grand_total = parseFloat(total);
+                    }else{
+                        grand_total = parseFloat(delivery_charge) + parseFloat(total);
+                    }
+                  console.log(grand_total)
+                  $('#grand_total').html(grand_total);
+                  $('.check_out_tot').html(grand_total);
+                  
+                  var grand_mrp = 0;
+                  var total_dicount = 0;
+                  $('tr.final_bill').each(function(){
+                      var mrp = $(this).find('td.mrp').text();
+                      var price = $(this).find('td.unit_price').text();
+                      var dicount = parseFloat(mrp)  - parseFloat(price);
+                        console.log(mrp)
+                        console.log(price)
+                        console.log(dicount)
+
+                      $(this).find('.discount').text(dicount);
+                      total_dicount += dicount;
+                      total_dicounts = total_dicount.toFixed(2);
+
+                      var qty = $(this).find('td.qty').text();
+                      var mrp_total = parseFloat(qty) * parseFloat(mrp);
+                      grand_mrp += mrp_total;
+                      grand_mrps = mrp_total.toFixed(2);
+                  });
+                  $('.total_dicount').html(total_dicounts);
+                  $('.total_mrp').html(grand_mrps);
+              });
+          </script>
+          <div class="buttons clearfix">
+              <div class="pull-left"><a href="{% url 'web:index' %}" class="btn btn-default">Continue Shopping</a></div>
+              
+          </div>
+        </div>
+        <div id='snackbar'></div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+$(document).on("click",'input[name="deliver_address"]',function (e) {
+
+  python = '{% if not user.is_authenticated %}'
+  window.location.href = "{% url 'web:login' %}?next={% url 'web:single_product' pk=instance.pk %}"
+  python = '{% else %}'
+
+  $this = $(this);
+  let id = $(this).val()
+  var url = '{% url "web:change_address" %}'
+  $.ajax({
+    type: "GET",
+    url: url,
+    dataType: "json",
+    data: {
+      pk: id,
+    },
+
+    success: function (data) {
+          if(data['status']=='true')
+          {
+              let delivery_charge = data['charge']
+              $('td.delivery_charger').html(delivery_charge)
+              let total = $('.total').html();
+                if (total >= 500){
+                    $('td.delivery_charger').html(0)
+                    let grand_total = parseFloat(total);
+                }else{
+                    $('td.delivery_charger').html(delivery_charge)
+                    let grand_total = parseFloat(delivery_charge) + parseFloat(total);
+                }
+              console.log(grand_total)
+              $('#grand_total').html(grand_total);
+              $('.check_out_tot').html(grand_total);
+
+              $("#snackbar").html('Address Changed Successfully');
+          }
+          else
+              $("#snackbar").html('An Error Occured');
+
+      ShowSnackBar();
+    },
+
+    error: function (data) {
+        $("#snackbar").html('An Error Occured');
+      ShowSnackBar();
+    }
+  });
+  python = '{% endif %}'
+}
+);
+</script>
+{% endblock content %}

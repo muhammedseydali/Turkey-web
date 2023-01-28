@@ -1,0 +1,55 @@
+{% load static %}
+
+<div class="nothing_found">
+	<div class="image">
+		<img src="{% static 'web/images/cartempty.png' %}" alt="Image" title="Nothing Found" />
+	</div>
+	<h3>Sorry, no results found!</h3>
+	<p>Please check the spelling or try searching for something else</p>
+</div>
+
+<style>
+	div.nothing_found {
+		text-align: center !important;
+		padding: 2% 0 3%;
+		margin-top: 3%;
+		background: #f5f5f5;
+		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.04);
+    	-webkit-box-sizing: border-box;
+    	-moz-box-sizing: border-box;
+    	box-sizing: border-box;
+		margin-bottom: 217px;
+	}
+	div.nothing_found a.explore{
+		text-align: center !important;
+		background: #00796b;
+		cursor: pointer;
+		border: 2px solid #fff;
+		color: #fff;
+		font-size: 18px;
+    	padding: 10px 0;
+    	width: 200px;
+    	display: inline-block;
+	}
+	div.nothing_found h3 {
+		font-size: 28px;
+		text-transform: capitalize;
+		color: #999;
+*/		padding: 0 20% 5px;
+		display: inline-block;
+		margin-bottom: 0 !important;
+	}
+	div.nothing_found p{
+		margin: 10px 0;
+	}
+	div.nothing_found div.image img {
+		display: block;
+		width: 100%;
+	}
+	div.nothing_found div.image {
+		width: 200px;
+		margin: 0 auto;
+		margin-bottom: 20px;
+	}
+}
+</style>

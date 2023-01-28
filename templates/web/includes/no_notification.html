@@ -1,0 +1,55 @@
+{% load static %}
+
+<div class="nothing_found">
+	<div class="image">
+		<img src="{% static 'web/images/cartempty.png' %}" alt="Image" title="Nothing Found" />
+	</div>
+	<h3>No notifications are available as of now.</h3>
+
+	<a href="{% url 'web:index' %}" class="buttontwo shopping"><b class="fontello icon-basket"></b>&nbsp;&nbsp;Continue
+		Shopping</a>
+</div>
+
+<style>
+	div.nothing_found {
+		text-align: center !important;
+		padding: 2% 0 7%;
+		margin-top: 5%;
+		background: #fff;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+	}
+
+	div.nothing_found a.explore {
+		text-align: center !important;
+		background: #00796b;
+		cursor: pointer;
+		border: 2px solid #fff;
+		color: #fff;
+		font-size: 18px;
+		padding: 10px 0;
+		width: 200px;
+		display: inline-block;
+	}
+
+	div.nothing_found h3 {
+		font-size: 22px;
+		text-transform: capitalize;
+		color: #777;
+		padding: 0 20% 5px;
+		margin-bottom: 20px !important;
+	}
+
+	div.nothing_found div.image img {
+		display: block;
+		width: 100%;
+	}
+
+	div.nothing_found div.image {
+		width: 200px;
+		margin: 0 auto;
+		margin-bottom: 20px;
+	}
+	}
+</style>

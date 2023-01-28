@@ -28,3 +28,6 @@ settings.py
 .venv
 env/
 venv/
+home/migrations/
+. home/migrations/
+project/home/migrations

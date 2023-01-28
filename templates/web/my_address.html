@@ -1,0 +1,85 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %}
+	<section id="banner" style="background-image: url('../../static/web/images/address_book.jpg');">
+		<div class="container">
+			<h1 class="title">My Account</h1>
+		</div>
+		<div class="breadcrumbs">
+			<ul>
+				<li><a href="{% url 'web:index' %}">Home</a></li>
+				<li><span>My Address</span></li>
+			</ul>
+		</div>
+	</section><!--[#banner]-->
+	<section id="dashboard">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4" id="side_menu">
+					<ul>
+						<li>
+							<a href="{% url 'web:my_account' %}">
+								<i class="svgicon"><img src="{% static 'web/images/dashboard.svg' %}" alt="My Account"></i>
+								My Account
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_orders' %}" title="My Orders">
+								<i class="svgicon"><img src="{% static 'web/images/shopping-bag.svg' %}" alt="My Orders"></i>
+								My Orders
+							</a>
+						</li>
+						<!-- <li>
+							<a href="{% url 'web:my_wallet' %}">
+								<i class="svgicon"><img src="{% static 'web/images/wallet.svg' %}" alt="My Wallet"></i>
+								My Wallet
+							</a>
+						</li> -->
+						<li>
+							<a href="{% url 'web:my_rewards' %}" title="My Rewards">
+								<i class="svgicon"><img src="{% static 'web/images/coins.svg' %}" alt="My Rewards"></i>
+								My Rewards
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_wishlist' %}" title="My Wishlist">
+								<i class="svgicon"><img src="{% static 'web/images/wishlist-white.svg' %}" alt="My Wishlist"></i>
+								My Wishlist
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_cart' %}" title="My Cart">
+								<i class="svgicon"><img src="{% static 'web/images/shopping-cart-white.svg' %}" alt="My Cart"></i>
+								My Cart
+							</a>
+						</li>
+						<li class="active">
+							<a href="{% url 'web:my_address' %}" title="My Address">
+								<i class="svgicon"><img src="{% static 'web/images/005-location.svg' %}" alt="My Address"></i>
+								My Address
+							</a>
+						</li>
+					</ul>
+				</div><!--[#side_menu]-->
+				<div id="main_content" class="col-md-8">
+					<div class="head">
+						<h4><b>Addresses</b></h4>
+					</div> 
+					<div class="content">
+						{% for address in addresses %}
+						<div id="myorders_list" class="address_items">
+							<div class="order_details">
+								<span class="number" style="background-image: url('../../static/web/images/address.png'); background-size: cover;"></span>{{foorloop.counter}}</span>
+								<h5>{{customer.name}}</h5>
+								<p>{{address.name}} {{address.address}}<br />{{address.phone}}<br />{{address.pincode}}<br />{{address.city}}, {{address.landmark}}<br />{{address.state}}
+								</p>
+								<a href="{% url 'web:my_address_edit' pk=address.pk %}" class="edit"></a> 
+								<a href="{% url 'web:delete_address_book' pk=address.pk %}" class="delete"></a>
+								<hr>
+							</div><!--[.order_details]-->
+						</div><!--[.wishlist_items]-->
+						{% endfor %}
+					</div><!--[content]-->
+				</div><!--[main_content]-->
+			</div>
+		</div>
+	</section><!--[dashboard]-->
+{% endblock %}

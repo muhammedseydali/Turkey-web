@@ -1,0 +1,490 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %}
+
+{% load web_template_tags %}
+{% load main_template_tags %}
+<section id="products_section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 sidebar">
+				<div class="panel-group filter_group">
+					<h3>Categories</h3>
+
+				</div>
+				<!--[.filter_group]-->
+				{% if product_categories %}
+				{% for category in product_categories %}
+				<div class="panel-group filter_group">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a class="collapse_title collapsed" data-toggle="collapse"
+									href="#filter{{forloop.counter}}">{{category.name}}</a>
+							</h4>
+						</div>
+						<div id="filter{{forloop.counter}}" class="panel-collapse collapse">
+							<ul class="list-group">
+								{% for sub_cat in category|get_sub_category %}
+								<li class="list-group-item">
+									<a href="{% url 'web:sub_category_products' pk=sub_cat.pk %}"
+										title="Sub Categories">{{sub_cat.name}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--[.filter_group]-->
+				{% endfor %}
+				{% endif %}
+			</div>
+			<!--[sidebar]-->
+			<div class="col-md-9 right_section">
+				{% if offer_data %}
+				{% for offer in offer_data|slice:":1" %}
+				<div class="row">
+					<div class="content_banner" style="background-image: url('{{offer.image_url}}');">
+						<div class="banner_content">
+							<div class="content">
+								<h4>{{offer.offer_percentage}}% OFF</h4>
+								<p>{{offer.product}}</p>
+								<a href="{% url 'web:single_product' pk=offer.product_pk %}" class="shop_now">
+									Shop Now
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+				{% else %}
+				<div class="row">
+					<div class="content_banner"
+						style="background-image: url('../../static/web/images/strawberry.jpg');">
+						<div class="banner_content">
+							<div class="content">
+								<h4></h4>
+								<p>Best Products</p>
+								<a href="{% url 'web:product_list' %}" class="shop_now">
+									Shop Now
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+				<div class="white_bg product_list_content list-pro">
+					<div class="head_title">
+						<h2 class="title">
+							<small>Products</small>
+							<b>{{cat_name}}</b>
+						</h2>
+					</div>
+					<div class="products_list">
+						{% load el_pagination_tags %}
+						{% if products %}
+						{% paginate 9 products %}
+						{% for item in products %}
+						<div class="col">
+							<div class="product equal-pro" data-class="product">
+								{% if item.percent > 0 %}
+								<div class="bookmark pro-save">
+									<h6 style="color:#fff">
+										{{item.percent|floatformat:"0"}}% OFF
+									</h6>
+								</div>
+								{% else %}
+								<div class="bookmark pro-save" style="display: none;">
+									<h6 style="color:#fff">
+									</h6>
+								</div>
+								{% endif %}
+								<a href="{% url 'web:add_to_wishlist' %}" data-id="add-to-wishlist"
+									title="Add To wishlist"
+									class="wishlist awish {% if item.pk|check_color_wish:request %} active {% endif %}"
+									data-pk="{{item.pk}}"></a>
+								{% if item.image %}
+								<a href="{% url 'web:single_product' pk=item.pk %}" class="thumb equal-img pro-img">
+									<img src="{{item.image.url}}" alt="product">
+								</a>
+								{% else %}
+								<a href="{% url 'web:single_product' pk=item.pk %}" class="thumb pro-img">
+									<img src="{% static 'web/images/democat1.jpg' %}" alt="product">
+								</a>
+								{% endif %}
+								<div class="product_details">
+									{% if item.stock <= 0 %}
+									<h6 class="status" style="color:rgb(170, 23, 19)">Not Available</h6>
+									{% else %}
+									<h6 class="status" style="color: #138021e0;">Available</h6>
+									{% endif %}
+									<h3 class="equal_name"><a href="{% url 'web:single_product' pk=item.pk %}"
+											class="pro-name">{{item.name}}
+											{% if item.count != None and item.count != "" and item.count != " " and item.count != "  "  %}
+											- {{item.count }} Count {% endif %}
+											{% if item.size != None and item.size != "" and item.size != " " and item.size != "  " %}-
+											{{item.size|title}} Size {% endif %}
+											{% if item.flavour != None and item.flavour != "" and item.flavour != " " and item.flavour != "  " %}-
+											{{item.flavour}} Flavour {% endif %}</a></h3>
+									<span class="price">
+										<b class="pro-price"><i class="currency">&#8377;</i>{{item.price}}</b>
+										<del class="pro-mrp"><i class="currency ">&#8377;</i>{{item.mrp}}</del>
+									</span>
+									{% if item.saved_price > 0 %}
+									<h5 class="pro-pr pr-save" style="color: forestgreen;"> You Save <i
+											class="currency">&#8377;</i> {{item.saved_price}}</h5>
+									{% else %}
+									<h5 class="pro-pr pr-save" style="color: forestgreen;"></h5>
+									</p>
+									{% endif %}
+								</div>
+								<div class="panel-body">
+									<div class="col-sm-12">
+										<select href="{% url 'products:get_product_varient_data' %}"
+											data-id="get-varient-data" name="payment_type" id="id_payment_type"
+											class="form-control">
+											<option class="main_pro" value="{{item.pk}}">{{item.unit_type}}</option>
+											{% for i in item.variations %}
+											<option value="{{i.pk}}">{{i}}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</div>
+								<div class="quantity pro-qty-card">
+									<div class="q_minus">
+										<span class="q_control" data-multi="-1">-</span>
+									</div>
+									<div class="q_input">
+										<input id="qty_change" type="text" class="quntity-input"
+											value="{{item.pk|check_qty_in_cart:request}}" />
+										<b class="value">Qty</b>
+									</div>
+									<div class="q_plus">
+										<span class="q_control" data-multi="1">+</span>
+									</div>
+									<div class="clearfix"></div>
+								</div>
+								<a href="{% url 'web:add_cart' %}" title="Add To Cart"
+									class="add_to_cart acart {% if item.pk|check_color_cart:request %} active {% endif %} "
+									data-id="add-to-cart" data-pk="{{item.pk}}"></a>
+							</div>
+							<!--[.product]-->
+
+						</div>
+						<!--[.col]-->
+
+						{% endfor %}
+						<!--pagination -->
+						<div class="bootgrid-footer container-fluid" id="data-table-selection-footer">
+							{% get_pages %}
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="pagination">
+										{% show_pages %}
+									</div>
+								</div>
+							</div>
+						</div>
+						{% else %}
+						<div class="nothing_found">
+							<h3>Sorry, no results found!</h3>
+						</div>
+						{% endif %}
+					</div>
+					<!--[products_slide]-->
+				</div> <!-- [.white_bg] -->
+
+			</div>
+		</div>
+	</div>
+</section>
+<!--[#featured_products]-->
+{% if offer_data %}
+<section id="offers_code">
+	<div class="container">
+		<div class="head_title">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="row">
+						<h2 class="title">
+							<small>Valued</small>
+							<b>Offer Products</b>
+						</h2>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="widget_row">
+			{% if offer_data %}
+			{% for offer in offer_data|slice:":3" %}
+			<div class="col-md-4 col-sm-6 coupen_widget">
+				<div class="cover" style="background-image: url('{{offer.image_url}}');">
+					<h4 class="title">
+						{{offer.category}}
+					</h4>
+					<div class="offer_details">
+						<b class="offer_value">{{offer.offer_percentage}}% OFF</b>
+						<small class="caption">Buy More & Save More</small>
+						<span class="cat">{{offer.product}}</span>
+					</div>
+					<a href="{% url 'web:single_product' pk=offer.product_pk %}" class="offer_now">
+						<span class="svgicon">
+							<img src="{% static 'web/images/shopping-cart.svg' %}" alt="shop now">
+						</span>
+						Shop Now
+					</a>
+				</div>
+			</div>
+			<!--[coupen_widget]-->
+			{% endfor %}
+			{% endif %}
+			<div class="clearfix"></div>
+		</div>
+		<!--[offers_code >> .widget_row]-->
+	</div>
+	<!--[offers_code >> .container]-->
+</section>
+<!--[offers_code]-->
+{% endif %}
+<div id="snackbar"></div>
+
+<!-- PRODUCT NOT FOUND STYLE -->
+<style>
+	div.nothing_found {
+		text-align: center !important;
+		padding: 2% 0 3%;
+		margin-top: 3%;
+		background: #f5f5f5;
+		box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 4px 4px 0 rgba(0, 0, 0, 0.04);
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		margin-bottom: 217px;
+	}
+
+	div.nothing_found a.explore {
+		text-align: center !important;
+		background: #00796b;
+		cursor: pointer;
+		border: 2px solid #fff;
+		color: #fff;
+		font-size: 18px;
+		padding: 10px 0;
+		width: 200px;
+		display: inline-block;
+	}
+
+	div.nothing_found h3 {
+		font-size: 28px;
+		text-transform: capitalize;
+		color: #999;
+		display: inline-block;
+		margin-bottom: 0 !important;
+	}
+
+	div.nothing_found p {
+		margin: 10px 0;
+	}
+
+	div.nothing_found div.image img {
+		display: block;
+		width: 100%;
+	}
+
+	div.nothing_found div.image {
+		width: 200px;
+		margin: 0 auto;
+		margin-bottom: 20px;
+	}
+</style>
+<style>
+	.pro-qty-card {
+		display: inline-block;
+		bottom: 18px;
+		position: absolute;
+	}
+
+	.pro-img {
+		width: 100%;
+		display: inline-block;
+	}
+
+	.pro-img img {
+		width: 100%;
+		height: 100%;
+	}
+
+	.products_list .product img {
+		height: 192px;
+	}
+
+	@media (max-width: 360px) {
+		.equal-img {
+			height: 192px !important;
+		}
+	}
+</style>
+<script>
+	$('select[name="payment_type"]').change(function () {
+		$this = $(this);
+		var pk = $(this).val();
+		if (pk) {
+			$parent = $this.parents('div[data-class ="product"]');
+			$parent.find('a[data-id="add-to-cart"]').attr('data-pk', pk)
+			$parent.find('a[data-id="add-to-wishlist"]').attr('data-pk', pk)
+		}
+		else {
+			$parent = $this.parents('div[data-class ="product"]');
+			$parent.find('a[data-id="add-to-cart"]').attr('data-pk', pk)
+			$parent.find('a[data-id="add-to-wishlist"]').attr('data-pk', pk)
+		};
+	});
+
+	$(document).on("click", 'a[data-id="add-to-cart"], a[data-id="add-to-wishlist"]', function (e) {
+		e.preventDefault();
+		python = '{% if not user.is_authenticated %}'
+		window.location.href = "{% url 'web:login' %}?next={% url 'web:single_product' pk=instance.pk %}"
+		python = '{% else %}'
+
+		$this = $(this);
+		var url = $(this).attr("href");
+		var isReload = $this.hasClass("reload");
+		let id = $(this).attr("data-pk");
+		let qty = $(this).parents('.product').find('#qty_change').val()
+		let parent = $(this).parents('.product')
+		$.ajax({
+
+			type: "GET",
+			url: url,
+			dataType: "json",
+			data: {
+				pk: id,
+				qty: qty
+			},
+
+			success: function (data) {
+				var status = data["status"];
+				var message = data["message"];
+				var cart_item_count = data["cart_item_count"];
+				var wishlist_item_count = data["wishlist_item_count"];
+
+				if (message == "Added to Wishlist") {
+					parent.find('.awish').addClass('active');
+				} else if (message == "Added to Cart") {
+					parent.find('.acart').addClass('active');
+				} else if (message == "Removed from Wishlist") {
+					parent.find('.awish').removeClass('active');
+				}
+
+				$("#snackbar").html(message);
+				ShowSnackBar();
+				checkCartAnsWishlist();
+				$("header wishlist_count span").html(wishlist_item_count);
+				$("header cart_count span").html(cart_item_count);
+			},
+
+			error: function (data) {
+				var title = "An error occurred";
+				var message = "An error occurred. Please try again later.";
+				swal(title, message, "error");
+			}
+		});
+		python = '{% endif %}'
+	}
+	);
+
+	$(document).on("click", 'select[name="payment_type"]', function (e) {
+		e.preventDefault();
+
+		$this = $(this);
+		var url = $(this).attr("href");
+		$parent = $this.parents('div[data-class ="product"]');
+		let id = $this.val()
+		var isReload = $this.hasClass("reload");
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			data: {
+				pk: id
+			},
+
+			success: function (data) {
+				var status = data["status"];
+				var message = data["message"];
+				var name = data['name'];
+				var price = data['price'];
+				var cart_qty = data['cart_qty'];
+				var count = data['count'];
+				var flavour = data['flavour'];
+				var size = data['size'];
+				var image = data['image'];
+				var pk = data['pk'];
+				var stock = data['stock'];
+				var mrp = data['mrp'];
+				var save_amount = mrp - price;
+				save_amount = save_amount.toFixed(2);
+				var percent = data['percent'];
+				var item_in_cart = data['item_in_cart'];
+
+				console.log(image, 'imageeeeeeeeeeeeeee')
+				new_name = ""
+				if (name != "") {
+					new_name = `${name}`
+				}
+				if (size != "None" && size != "" && size != " ") {
+					new_name += `- ${size} Size `
+				}
+				if (flavour != "None" && flavour != "" && flavour != " ") {
+					new_name += `- ${flavour} Flavour`
+				}
+				if (count != "None" && count != "" && count != " ") {
+					new_name += `- ${count} Count`
+				}
+
+				if (save_amount <= 0) {
+					$parent.find('.pro-pr').html(``);
+				}
+				else {
+					$parent.find('.pro-pr').html(`You Save <i class="currency">₹</i> ${save_amount}`);
+				}
+
+				if (percent <= 0) {
+					$parent.find('.pro-save').hide();
+				}
+				else {
+					$parent.find('.pro-save').show();
+					$parent.find('.pro-save h6').html(`${percent}% OFF`);
+				}
+				if (stock <= 0) {
+					$parent.find('.status').html('Not Available');
+					$parent.find('.status').css('color', '#AA1713');
+				} else {
+					$parent.find('.status').html('Available');
+					$parent.find('.status').css('color', '#138021e0');
+				}
+
+				if (item_in_cart == "true") {
+					$parent.find('.acart').addClass('active');
+				}
+				else {
+					$parent.find('.acart').removeClass('active');
+				}
+
+				$parent.find('.pro-price').html(`&#8377 ${price}`);
+				$parent.find('.pro-mrp').html(`&#8377 ${mrp}`);
+				$parent.find('.pro-name').html(new_name);
+				$parent.find('.pro-add-cart').attr('data-pk', pk);
+				$parent.find('.pro-img img').attr('src', image);
+				$parent.find('#qty_change').val(cart_qty);
+			},
+
+			error: function (data) {
+				var title = "An error occurred";
+				var message = "An error occurred. Please try again later.";
+				$("#snackbar").html(message);
+				ShowSnackBar();
+			}
+		});
+	}
+	);
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load main_template_tags %}
+{% block content %}
+<script type="text/javascript"></script>
+<div id="account-edit" class="container acpage">
+    <div class="bg-color-b">
+        <div class="row my_address_edit">
+            <div id="content" class="col-md-9 col-sm-8 col-xs-12">
+                <h1 class="heading">My Account Information</h1>
+                <form action="{{url}}" method="post" enctype="multipart/form-data" class="form-horizontal ajax redirect reset is_swal">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>Your Personal Details</legend>
+                        {{form.as_p}}
+
+                    </fieldset>
+                    <div class="buttons clearfix">
+                        <div class="pull-left"><a href="" class="btn btn-default">Back</a></div>
+                        <div class="pull-right">
+                            <input type="submit" value="Continue" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <aside id="column-right" class="col-md-3 col-sm-4 col-xs-12 hidden-xs">
+                <div class="list-group account-column">
+                    <h4><img src="{% static 'web/images/male.png' %}"/>My Account</h4>
+                    <a href="{% url 'web:my_account' %}" class="list-group-item">My Account</a>
+                    <a href="{% url 'web:my_account_edit' %}" class="list-group-item">Edit Account</a> 
+                    <a href="{% url 'web:my_address' %}" class="list-group-item">Address Book</a>
+                    <hr>
+                    <h4><img src="{% static 'web/images/order.png' %}"/>My Orders</h4>
+                      <a href="{% url 'web:my_orders' %}" class="list-group-item">Order History</a> 
+                    <hr>
+                    <h4><img src="{% static 'web/images/male.png' %}"/>My Stuff</h4>
+                    <a href="{% url 'web:my_wishlist' %}" class="list-group-item">Wish List</a>
+                    <a href="{% url 'web:my_cart' %}" class="list-group-item">Cart List</a>
+                    <hr>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+<style>
+    .my_address_edit{
+        padding: 50px 0;
+    }
+</style>
+{% endblock content %}

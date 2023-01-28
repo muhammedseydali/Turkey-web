@@ -1,0 +1,65 @@
+{% extends 'web/base.html' %}
+{% load static %}
+{% block content%}
+<section id="auth_page_container">
+	<section id="auth_page">
+		<div class="top">
+			<h3>Create an account</h3>
+			<section class="exam">
+				<div class="exam-pop-up">
+					<div class="content tab">
+						<div class="tab_content">
+							<div class="tabs_item">
+								<form class="bg ajax redirect" action="{% url 'web:register' %}" method="post">
+									{% csrf_token %}
+									<input class="size" type="text" id="id_username" placeholder="Username"
+										name="username" style="margin-bottom: 10px;">
+									<input class="size" type="email" placeholder="Email" name="email"
+										style="margin-bottom: 10px;">
+									<input class="password size" id="id_password1" type="password"
+										placeholder="Password" name="password1" style="margin-bottom: 10px;">
+									<input class="password size" type="password" id="id_password2"
+										placeholder="Re-Enter Password" name="password2" style="margin-bottom: 20px;">
+
+									<a href="{% url 'web:login' %}" class="holo-button">Login</a>
+									<input class="submit" type="submit" value="Register">
+								</form>
+							</div> <!-- / tabs_item -->
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+	</section>
+</section>
+
+<script type="text/javascript">
+	$(document).on('ready', function () {
+		$('li').click(function () {
+			var $this = $(this);
+
+			if ($this.hasClass('lawyer_login')) {
+				$('div.social-box').slideUp();
+			} else {
+				$('div.social-box').slideDown();
+			}
+
+		});
+
+	});
+   //   	$("#id_username").on("keydown",function(e){
+   //   		var $this = $(this);
+   //   		var val = $this.val()
+			// $this.val(val.toLowerCase());
+		 //    return e.which !== 32;
+
+   //   	});
+   //   	$("#id_username").on("blur",function(e){
+   //   		var $this = $(this);
+   //   		var val = $this.val()
+			// $this.val(val.toLowerCase());
+
+   //   	});
+</script>
+{% endblock %}

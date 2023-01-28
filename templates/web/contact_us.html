@@ -1,0 +1,42 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% block content %}
+	<section id="banner" style="background-image: url('../../static/web/images/contact.jpg');">
+		<div class="container">
+			<h1 class="title">Contact Us</h1>
+		</div>
+		<div class="breadcrumbs">
+			<ul>
+				<li><a href="{% url 'web:index' %}">Home</a></li>
+				<li><span>Contact Us</span></li>
+			</ul>
+		</div>
+	</section><!--[#banner]-->
+	<section id="single_page">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 col-sm-6 mb30">
+					<h2 class="single_title">Contact Us</h2>
+					{% if contact %}
+					<p>{{contact.address|linebreaks}}</p>
+					<p><a href="tel:{{contact.phone}}">Phone : {{contact.phone}}</a></p>
+
+					{% else %}
+					<p>
+						Day bazar<br/>
+						peringolam road <br/>
+						Varatyak<br/>
+						Kunnamanagalam<br/>
+						673571<br/>
+						Calicut<br/>
+					</p>
+					<p><a href="tel:9322500600">Phone : 9322500600</a></p>
+					{% endif %}
+				</div>
+				<div class="col-md-4 col-sm-6">
+					<img src="{% static 'web/images/contact-us.png' %}" alt="about day bazar">
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

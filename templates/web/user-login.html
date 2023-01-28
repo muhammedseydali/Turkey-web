@@ -1,0 +1,53 @@
+{% extends "web/base.html" %}
+{% load i18n %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+{% load static %}
+
+<div id="account-login" class="container acpage" style="padding-top: 35px;">
+   <div class="bg-color-b">
+      <div class="row">
+         <div id="content" class="col-md-12 col-sm-12 col-xs-12" style="min-height: auto !important;">
+            <div class="row" style="justify-content: center;">
+
+               <div class="col-lg-8 col-xs-12" style="margin: 0 auto !important;">
+                  <div class="well">
+                     <h2 class="heading"> Customer Login</h2>
+                     <p><strong>Enter your phone number</strong></p>
+
+                     <form action="." class="" method="POST">
+                        {% if message %}
+                        <div class="text-danger"><strong>
+                              {{message}}
+                           </strong>
+                        </div>
+                        {% endif %}
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{next_login|default:""}}">
+                        <div class="form-group">
+                           <!-- {{ form.username }} -->
+                           <input type="text" name="phone" placeholder="Enter phone number"
+                              class="required user-input form-control" maxlength="254" required="" id="id_phone">
+
+                           {% if form.phone.errors %}
+                           <span class="error">{{ form.phone.errors.as_text }}</span>
+                           {% endif %}
+
+                        </div>
+                        <!-- <div class="form-group">
+                           <a href="{% url 'auth_password_reset' %}" class="text">Forgot password?</a>
+                        </div> -->
+                        <input type="hidden" name="next" value="{{ next_login }}" />
+                        <button type="submit" class="btn btn-primary">Send OTP</button>
+
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endblock content %}

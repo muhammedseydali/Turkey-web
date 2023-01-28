@@ -1,0 +1,101 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %}
+    <section id="content">
+        <div class="container">
+            <div class="head_title">
+                <h2 class="title">
+                  <small>Recent</small>
+                  <b>Notifications</b>
+                </h2>
+            </div>
+
+            <div class="card">
+            	
+            	{% if instances %}
+                <div class="list-group lg-alt lg-even-black">
+                    {% load el_pagination_tags %}
+                    {% paginate 15 instances %}
+                	{% for notification in instances %}
+                	
+                    <div class="list-group-item check_items_row media">
+
+                        {% if notification.subject.code == "order_placed" %}
+                        
+                        <div class="pull-right">
+                            <ul class="actions">
+                                <li class="web-not">
+                                    {% if not notification.is_read %}
+                                    <a title="Mark As Read" data-id="{{notification.pk}}" href="{% url 'users:read_notification' pk=notification.pk %}" data-text="{{confirm_read_message}}" data-title="Are you sure?" class="not-icons action-button reload" style="color: #7b7979; margin-right: 10px;"><i class="fa fa-check m-r-5"></i></a>
+                                    {% endif %}
+                                    <a title="Delete Notification" data-id="{{notification.pk}}" href="{% url 'users:delete_notification' pk=notification.pk %}" data-text="{{confirm_delete_message}}" data-title="Are you sure?" class="not-icons action-button reload " style="color: #7b7979"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            </li>
+                            </ul>
+                        </div>
+                        {% endif%}
+                        {% if notification.subject.code == "order_placed" %}
+                        <div class="media-body web-not-container">
+                            {% if notification.is_read %}
+                            <div style="display: flex; align-items: center;">
+                                <span class="not-read-box"></span>
+                                <img src="{% static 'web/images/delivery-truck.png' %}" alt="" style="margin: 0 20px; opacity: 0.3;">
+                                <div class="lgi-heading" style="color: rgb(177, 173, 173);">your order ID <a href="{% url 'web:my_orders' %}" style="color:rgb(177, 173, 173);"><b>{{notification.order.order_id}}</b></a>  has been placed</div>
+                            </div>
+                            {% else %}
+                            <div style="display: flex; align-items: center;">
+                                <span class="read-box"></span>
+                                <img src="{% static 'web/images/delivery-truck.png' %}" alt="" style="margin: 0 20px;">
+                                <div class="lgi-heading" style="color:#efa535;">your order ID <a href="{% url 'web:my_orders' %}" style="color: #efa535"><b>{{notification.order.order_id}}</b></a>  has been placed</div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="bootgrid-footer container-fluid" id="data-table-selection-footer">
+                        {% get_pages %}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="pagination">
+                                    {% show_pages %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}   
+            </div>
+        </div>
+    </section>
+    <style>
+        #content{
+            padding: 30px 0;
+        }
+        /* .container{
+            padding: 25px 0;
+        } */
+        li{
+            list-style: none;
+        }
+        .web-not-inner{
+            position: inherit;
+        }
+        .web-not{
+            position: inherit;
+        }
+
+        .not-read-box{
+            width: 10px;
+            height: 10px;
+            background-color: rgb(177, 173, 173);
+            border-radius: 50%;
+            color: #fff;
+        }
+        .read-box{
+            width: 10px;
+            height: 10px;
+            background-color: #efa535;
+            border-radius: 50%;
+            color: #fff;
+        }
+    </style>
+	{% endblock %}
+

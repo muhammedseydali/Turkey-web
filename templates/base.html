@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<!--[if IE 9 ]><html class="ie9"><![endif]-->
+
+<head>
+  {% load static %}
+  <!-- Vendor CSS -->
+
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}" />
+
+  <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'web/fonts/favicon/favicon/apple-touch-icon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'web/fonts/favicon/favicon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'web/fonts/favicon/favicon/favicon-16x16.png' %}">
+  <link rel="manifest" href="{% static 'web/fonts/favicon/favicon/site.webmanifest' %}">
+  <link rel="mask-icon" href="{% static 'web/fonts/favicon/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+  <!-- <link rel="manifest" href="{% static 'img/favicon/manifest.json"> -->
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png' %}">
+  <meta name="theme-color" content="#ffffff">
+
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <meta name="description" content="globalduke">
+  <meta name="keywords" content="">
+  <meta name="author" content="">
+  <meta name="robots" content="">
+  <title>{{title}} | Save More With Us</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
+
+
+  <link
+    href="{% static 'vendors/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css' %}"
+    rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+  <!-- Fontawesome CSS -->
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+
+  <!-- Datetimepicker CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap-datetimepicker.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.datepicker.css' %}">
+
+  <!-- Lineawesome CSS -->
+  <link rel="stylesheet" href="{% static 'css/line-awesome.min.css' %}">
+
+  <!-- Chart CSS -->
+  <link rel="stylesheet" href="{% static 'plugins/morris/morris.css' %}">
+
+  <!-- sweet-alert css -->
+  <link href="{% static 'vendors/bower_components/bootstrap-sweetalert/lib/sweet-alert.css' %}" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <!-- Datatable CSS -->
+  <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap4.min.css' %}">
+
+  <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+
+  <link rel="stylesheet" href="{% static 'autocomplete_light/select2.css' %}" type="text/css" media="screen"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'autocomplete_light/vendor/select2/dist/css/select2.css' %}" type="text/css"
+    media="screen" rel="stylesheet" />
+
+
+
+  <style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Main Wrapper -->
+  <div class="main-wrapper">
+
+    <!-- Header -->
+    <div class="header">
+      <!-- Logo -->
+      <div class="header-left app">
+        <a href="{% url 'app' %}" class="logo">
+          <img src="{% static 'img/logo.png' %}" width="100" height="40" alt="">
+        </a>
+      </div>
+      <!-- /Logo -->
+
+      <a id="toggle_btn" href="javascript:void(0);">
+        <span class="bar-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </a>
+
+      <a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa fa-bars"></i></a>
+
+      <!-- Header Menu -->
+      <ul class="nav user-menu">
+
+        <li class="nav-item dropdown has-arrow main-drop">
+          <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+            <span>Notifications</span>
+          </a>
+          {% if recent_notifications %}
+          <div class="dropdown-menu">
+            {% for notification in recent_notifications %}
+            {% if notification.subject.code == "order_assigned" %}
+            <div class="notification-bar">
+              <img src="{% static 'web/images/delivery-truck.png' %}" alt="">
+              <p class="text-center">New order ID <a
+                  href="{% url 'orders:order' pk=notification.order.pk %}"><b>{{notification.order.order_id}}</b></a>
+                has been assigned to you</p>
+
+            </div>
+            <hr>
+            {% endif %}
+            {% if notification.subject.code == "new_order" %}
+            <div class="notification-bar">
+              <img src="{% static 'web/images/delivery-truck.png' %}" alt="">
+              <p class="text-center">
+                {{notification.subject}} <a
+                  href="{% url 'orders:order' pk=notification.order.pk %}"><b>{{notification.order.order_id}}</b></a>
+              </p>
+
+            </div>
+            <hr>
+            {% endif %}
+            {% endfor %}
+            <div class="not-menu-view">
+              <p class="not-menu-view-btn"> <a href="{% url 'users:notifications' %}">View more</a> </p>
+            </div>
+          </div>
+          {% endif %}
+        </li>
+        <li class="nav-item dropdown has-arrow main-drop">
+          <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+            <span>{{user_type}}</span>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a>
+          </div>
+        </li>
+      </ul>
+      <!-- /Header Menu -->
+
+      <!-- Mobile Menu -->
+      <div class="dropdown mobile-user-menu">
+        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i
+            class="fa fa-ellipsis-v"></i></a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="{% url 'users:logout' %}">Logout</a>
+        </div>
+      </div>
+      <div class="dropdown mobile-user-menu" style="margin-right: 25px;">
+        <a href="{% url 'users:notifications' %}" class="nav-link"><i class="fa fa-bell"></i></a>
+      </div>
+    </div>
+    <!-- /Mobile Menu -->
+
+  </div>
+  <!-- /Header -->
+
+  {% include 'includes/menu.html' %}
+  {% block content %}
+
+  {% if current_role == "delivery_agent" %}
+  {% include 'includes/dashboard/delivery_agent_dashboard.html' %}
+  {% else %}
+  {% include 'includes/dashboard/admin_dashboard.html' %}
+  {% endif %}
+
+  </div>
+  <!-- /Main Wrapper -->
+
+  {% endblock %}
+
+  <footer id="footer">
+    <p class="text-right">&copy; {% now 'Y' %}. All rights | Developed by <a target="_blank"
+        href="https://www.talrop.com/worktech/">Talrop WorkTech</a></p>
+  </footer>
+
+  {% include 'includes/extra/js.html' %}
+
+
+  {% block static %}
+
+  {% endblock %}
+
+  {% block filter_box %} {% endblock %}
+
+  {% include 'includes/extra/shortcuts.html' %}
+
+
+
+  <!-- <input type="hidden" value="{{user.username}}" id="username"/> -->
+  <input type="hidden" value="{{block_auto_redirect|yesno:'yes,no'}}" id="auto_redirect" />
+  <style>
+    .notification-bar p.text-center {
+      color: #444;
+      margin: 0;
+    }
+
+    .not-menu-view {
+      display: flex;
+      justify-content: center;
+    }
+
+    .not-menu-view-btn {
+      color: #fff;
+      background-color: #AA1713;
+      padding: 10px 20px;
+      width: max-content;
+    }
+
+    .not-menu-view-btn a {
+      color: #fff;
+    }
+
+    .notification-bar {
+      min-width: 600px;
+      display: flex;
+      padding: 10px 20px;
+      align-items: center;
+    }
+
+    .notification-bar img {
+      width: 25px;
+      height: 25px;
+      margin-right: 20px;
+    }
+
+    @media all and (max-width: 600px) {
+      .notification-bar {
+        min-width: 530px;
+        max-width: 530px;
+      }
+
+      .notification-bar {
+        right: 0;
+        left: -266px;
+      }
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      $('.inpeye').click(function (e) {
+        e.preventDefault();
+        var target = $(this).data('target-id');
+        var input = document.getElementById(target);
+        if (input.type === 'password') {
+          input.type = "text";
+        } else {
+          input.type = "password";
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

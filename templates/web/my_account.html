@@ -1,0 +1,132 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %} {% load main_template_tags %}
+	<section id="banner" style="background-image: url('../../static/web/images/vegetables-banner.jpg');">
+		<div class="container">
+			<h1 class="title">My Account</h1>
+		</div>
+		<div class="breadcrumbs">
+			<ul>
+				<li><a href="{% url 'web:index' %}">Home</a></li>
+				<li><span>My Account</span></li>
+			</ul>
+		</div>
+	</section><!--[#banner]-->
+	<section id="dashboard">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4" id="side_menu">
+					<ul>
+						<li class="active">
+							<a href="{% url 'web:my_account' %}" title="My Account">
+								<i class="svgicon"><img src="{% static 'web/images/dashboard.svg' %}" alt="My Account"></i>
+								My Account
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_orders' %}" title="My Orders">
+								<i class="svgicon"><img src="{% static 'web/images/shopping-bag.svg' %}" alt="My Orders"></i>
+								My Orders
+							</a>
+						</li>
+						<!-- <li>
+							<a href="{% url 'web:my_wallet' %}">
+								<i class="svgicon"><img src="{% static 'web/images/wallet.svg' %}" alt="My Wallet"></i>
+								My Wallet
+							</a>
+						</li> -->
+						<li>
+							<a href="{% url 'web:my_rewards' %}" title="My Rewards">
+								<i class="svgicon"><img src="{% static 'web/images/coins.svg' %}" alt="My Rewards"></i>
+								My Rewards
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_wishlist' %}" title="My Wishlist">
+								<i class="svgicon"><img src="{% static 'web/images/wishlist-white.svg' %}" alt="My Wishlist"></i>
+								My Wishlist
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_cart' %}" title="My Cart">
+								<i class="svgicon"><img src="{% static 'web/images/shopping-cart-white.svg' %}" alt="My Cart"></i>
+								My Cart
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_address' %}" title="My Address">
+								<i class="svgicon"><img src="{% static 'web/images/005-location.svg' %}" alt="My Address"></i>
+								My Address
+							</a>
+						</li>
+					</ul>
+				</div><!--[#side_menu]-->
+				<div id="main_content" class="col-md-8">
+					<div class="head">
+						<h4><b>OverView</b></h4>
+					</div>
+					<div class="row">
+						<div class="col-md-6 box">
+							<div class="box_inner">
+								<div class="top">
+									<h5 class="icon_title">
+										<i class="svgicon"><img src="{% static 'web/images/coins.svg' %}" alt="My Rewards"></i>
+										My Rewards
+									</h5>
+								</div>
+								<div class="content">
+									<div class="tags">
+										{% if rewards %}
+										{% for reward in rewards %}
+										<span class="offer">{{reward.reward_amount}} Coin</span>
+										{% endfor %}
+										{% endif %}
+									</div>
+									<a href="{% url 'web:my_rewards' %}" class="more">View More Details</a>
+								</div>
+							</div><!--[box_inner]-->
+						</div><!--[box]-->
+						<div class="col-md-6 box">
+							<div class="box_inner">
+								<div class="top">
+									<h5 class="icon_title">
+										<i class="svgicon"><img src="{% static 'web/images/wallet.svg' %}" alt="My Rewards"></i>
+										My Rewards
+									</h5>
+								</div>
+								<div class="content">
+									
+								</div>
+							</div><!--[box_inner]-->
+						</div><!--[box]-->
+					</div><!--[.row]-->
+					<div class="row"> 
+						<div class="col-md-12">
+							<div class="shadow_box">
+								<div class="top">
+									<h5 class="icon_title">History</h5>
+								</div>
+								<div class="content table-responsive">
+									<table>
+										<tr>
+											<th>Order ID</th>
+											<th>Date of Purchase</td>
+											<th>Payment Method</th>
+											<th>Delivery Status</th>
+										</tr>
+										{% for item in instances|slice:":3" %}
+										<tr>
+											<td>{{ item.order_id }}</td>
+											<td>{{item.date_added}}</td>
+											<td>{{ item.payment_method|human_readable_title }}</td>
+											<td>{{ item.order_status|title }}</td>
+										</tr>
+										{% endfor %}
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--[main_content]-->
+			</div>
+		</div>
+	</section><!--[dashboard]-->
+{% endblock %}

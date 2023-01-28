@@ -1,0 +1,816 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %} {% load main_template_tags %}
+{% load web_template_tags %}
+<section id="spotlight">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12" id="home_main_banner">
+        <div id="home_banner">
+          <div class="slider">
+            <div class="col slider_col">
+              <div class="col-md-8 spot-img">
+                <img src="{% static 'web/images/slider.jpg' %}" alt="">
+              </div>
+              <div class="col-md-4 cpation">
+                Save More With <b>Us</b>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>
+        </div>
+        <!--[#home_banner]-->
+      </div>
+    </div>
+  </div>
+  <!--[#spotlight >> .container ]-->
+</section>
+<!--[#spotlight]-->
+<section class="category_section">
+  <div class="container">
+    <div class="row">
+      <h2 class="title">
+        <small>Shop by</small>
+        <b>Categories</b>
+      </h2>
+      <div class="cat_list same_arrow owl-carousel owl-theme">
+        {% if product_category %}
+        {% for category in product_category %}
+        <div class="item cat-box">
+          <a href="{% url 'web:category_products' pk=category.pk %}" class="title cat-link" title="{{category.name}}">
+            {% if category.image %}
+            <img src="{{category.image.crop.50x50}}" alt="Categories">
+            {% else %}
+            <img src="{% static 'web/images/vegetables.png' %}" alt="{{category.name}}">
+            {% endif %}
+            <span class="cat-box-name">{{category.name}}</span>
+          </a>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+      </div>
+      <!--[.category_list >> .slider]-->
+    </div>
+  </div>
+  <!--[.category_list >> .container]-->
+</section>
+<!--[.category_list]-->
+{% if deal_data %}
+<section id="new-products">
+  <div class="container head_title">
+    <div class="row">
+      <div class="col-md-6 col-sm-8">
+        <div class="row">
+          <h2 class="title">
+            <small>Limited Offer</small>
+            <b>Top deals</b>
+          </h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-4">
+        <div class="row text-right">
+          <a class="more" href="{% url 'web:top_offers' %}" title="See All">See all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="orange_bg">
+    <div class="container">
+      <div class="row">
+        <div class="products_slide same_arrow owl-carousel owl-theme">
+          {% for deal in deal_data %}
+          <div class="product pro-equal" data-class="product">
+            <div class="bookmark pro-save"><span>
+                {{deal.offer_percentage|floatformat:"0"}}% OFF
+              </span>
+            </div>
+            <a href="{% url 'web:add_to_wishlist' %}" data-id="add-to-wishlist" title="Add To Wishlist"
+              class="wishlist awish {% if deal.varient_pk|check_color_wish:request %} active {% elif deal.product_pk|check_color_wish:request %} active {% endif %}"
+              {% if deal.varient_pk %} data-pk="{{deal.varient_pk}}" {% else %} data-pk="{{deal.product_pk}}"
+              {% endif %}></a>
+            <a href="{% url 'web:single_product' pk=deal.product_pk %}" class="thumb pro-img">
+              {% if deal.image_url %}
+              <img src="{{deal.image_url}}" alt="{{deal.product}}">
+              {% else %}
+              <img src="{% static 'web/images/democat1.jpg' %}" alt="product">
+              {% endif %}
+            </a>
+            <div class="product_details">
+              {% if deal.stock <= 0 %}
+              <span class="status" style="color:rgb(170, 23, 19)">Not Available</b></span>
+              {% else %}
+              <span class="status" style="color: #138021e0;">Available</b></span>
+              {% endif %}
+              <h3 class="deal_name"><a href="{% url 'web:single_product' pk=deal.product_pk %}"
+                  class="">{% if deal.unit_type  %} {{deal.product}}
+                  {% if deal.count != None and deal.count != "" and deal.count != " " and deal.count != "  " %} -
+                  {{deal.count}} Count {% endif %}
+                  {% if deal.size != None and deal.size != "" and deal.size != " " and deal.size != "  "%} -
+                  {{deal.size|title}} Size {% endif %}
+                  {% if deal.flavour != None and deal.flavour != "" and deal.flavour != " " and deal.flavour != "  "%} -
+                  {{deal.flavour}} Flavour {% endif %} - {{deal.unit_type}} {% else %} {{deal.product}} - {{deal.title}}
+                  {% if deal.count != None and deal.count != "" and deal.count != " " and deal.count != "  " %} -
+                  {{deal.count}} Count {% endif %}
+                  {% if deal.size != None and deal.size != "" and deal.size != " " and deal.size != "  " %} -
+                  {{deal.size|title}} Size {% endif %}
+                  {% if deal.flavour != None and deal.flavour != "" and deal.flavour != " " and deal.flavour != "  " %}
+                  - {{deal.flavour}} Flavour {% endif %} {% endif %}</a></h3>
+              <span class="price">
+                <del class="pro-mrp"><i class="currency ">₹</i>{% if deal.varient_mrp %} {{deal.varient_mrp}}
+                  {% else %} {{deal.price}} {% endif %} </del>
+                <b class="pro-price"><i class="currency">₹</i>{{deal.offer_price}}</b>
+              </span>
+              <p class="save-pr">
+                <b class="save-pri"> You Save <i class="currency">₹</i> {% if deal.varient_save_price %}
+                  {{deal.varient_save_price}} {% else %} {{deal.saved_price}} {% endif %} </b>
+              </p>
+            </div>
+            <div class="quantity">
+              <div class="q_minus">
+                <span class="q_control" data-multi="-1">-</span>
+              </div>
+              <div class="q_input">
+                <input id="qty_change" type="text" class="quntity-input"
+                  value="{% if deal.varient_pk %} {{deal.varient_pk|check_qty_in_cart:request}} {% else %} {{deal.product_pk|check_qty_in_cart:request}} {% endif %}" />
+                <b class="value">Qty</b>
+              </div>
+              <div class="q_plus">
+                <span class="q_control" data-multi="1">+</span>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <a href="{% url 'web:add_cart' %}" title="Add To Cart"
+              class="add_to_cart acart {% if deal.varient_pk|check_color_cart:request %} active {% elif deal.product_pk|check_color_cart:request %} active {% endif %}"
+              data-id="add-to-cart" {% if deal.varient_pk %} data-pk="{{deal.varient_pk}}" {% else %}
+              data-pk="{{deal.product_pk}}" {% endif %}></a>
+          </div>
+          <!--[.product]-->
+          {% endfor %}
+
+        </div>
+        <!--[products_slide]-->
+      </div>
+    </div>
+  </div> <!-- [.green_bg] -->
+</section>
+<!--[featured_products]-->
+{% endif %}
+{% if featured_products %}
+<section id="featured_products">
+  <div class="container head_title">
+    <div class="row">
+      <div class="col-md-6 col-sm-8">
+        <div class="row">
+          <h2 class="title">
+            <small>For you</small>
+            <b>Top Featured Products</b>
+          </h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-4">
+        <div class="row text-right">
+          <a class="more" href="{% url 'web:product_list' %}?type=featured " title="See All">See all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--[head_title]-->
+  <div class="green_bg">
+    <div class="container list-feature">
+      <div class="row">
+        <div class="products_slide same_arrow owl-carousel owl-theme">
+          {% if featured_products %}
+          {% for item in featured_products %}
+          <div class="product pro-equal" data-class="product">
+            {% if item.percent > 0 %}
+            <div class="bookmark pro-save"><span>{{item.percent|floatformat:"0"}}% OFF</span>
+              {% else %}
+              <div class="bookmark pro-save" style="display: none;"><span>{{item.percent|floatformat:"0"}}% OFF</span>
+                {% endif %}
+              </div>
+              <a href="{% url 'web:add_to_wishlist' %}" data-id="add-to-wishlist" title="Add To Wishlist"
+                class="wishlist awish {% if item.pk|check_color_wish:request %} active {% endif %}"
+                data-pk="{{item.pk}}"></a>
+              <a href="{% url 'web:single_product' pk=item.pk %}" class="thumb pro-img">
+                {% if item.image %}
+                <img src="{{item.image.url}}" alt="{{item.name}}">
+                {% else %}
+                <img src="{% static 'web/images/democat1.jpg' %}" alt="product">
+                {% endif %}
+              </a>
+              <div class="product_details">
+                {% if item.stock <= 0 %}
+                <span class="status" style="color:rgb(170, 23, 19)">Not Available</b></span>
+                {% else %}
+                <span class="status" style="color: #138021e0;">Available</b></span>
+                {% endif %}
+                <h3 class="equal-feature"><a href="{% url 'web:single_product' pk=item.pk %}"
+                    class="pro-name">{{item.name}}
+                    {% if item.count != None and item.count != "" and item.count != " " and item.count != "  "  %} -
+                    {{item.count }} Count {% endif %}
+                    {% if item.size != None and item.size != "" and item.size != " " and item.size != "  " %}-
+                    {{item.size|title}} Size {% endif %}
+                    {% if item.flavour != None and item.flavour != "" and item.flavour != " " and item.flavour != "  " %}-
+                    {{item.flavour}} Flavour {% endif %}</a></h3>
+                <span class="price">
+                  <b class="pro-price"><i class="currency">₹</i>{{item.price}}</b>
+                  <del class="pro-mrp"><i class="currency ">₹</i>{{item.mrp}}</del>
+                </span>
+                {% if item.saved_price > 0 %}
+                <p class="save-pr ">
+                  <b class="save-pri"> You Save <i class="currency">₹</i> {{item.saved_price}}</b>
+                </p>
+                {% else %}
+                <p class="save-pr ">
+                  <b class="save-pri"></b>
+                </p>
+                {% endif %}
+              </div>
+              <div class="panel-body">
+                <div class="col-sm-12">
+                  <select href="{% url 'products:get_product_varient_data' %}" data-id="get-varient-data"
+                    name="payment_type" id="id_payment_type" class="form-control">
+                    <option class="main_pro" value="{{item.pk}}">{{item.unit_type}}</option>
+                    {% for i in item.variations %}
+                    <option value="{{i.pk}}">{{i}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="quantity">
+                <div class="q_minus">
+                  <span class="q_control" data-multi="-1">-</span>
+                </div>
+                <div class="q_input">
+                  <input id="qty_change" type="text" class="quntity-input"
+                    value="{{item.pk|check_qty_in_cart:request}}" />
+                  <b class="value">Qty</b>
+                </div>
+                <div class="q_plus">
+                  <span class="q_control" data-multi="1">+</span>
+                </div>
+                <div class="clearfix"></div>
+              </div>
+              <a href="{% url 'web:add_cart' %}" title="Add To Cart"
+                class="add_to_cart acart {% if item.pk|check_color_cart:request %} active {% endif %}"
+                data-id="add-to-cart" data-pk="{{item.pk}}"></a>
+            </div>
+            <!--[.product]-->
+            {% endfor %}
+            {% endif %}
+          </div>
+          <!--[products_slide]-->
+        </div>
+      </div>
+    </div> <!-- [.green_bg] -->
+</section>
+{% endif %}
+{% if offer_data %}
+<section id="new-products">
+  <div class="container head_title">
+    <div class="row">
+      <div class="col-md-6 col-sm-8">
+        <div class="row">
+          <h2 class="title">
+            <small>Valued</small>
+            <b>Offer Products</b>
+          </h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-4">
+        <div class="row text-right">
+          <a class="more" href="{% url 'web:top_offers' %}" title="See All">See all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="orange_bg">
+    <div class="container">
+      <div class="row">
+        <div class="products_slide same_arrow owl-carousel owl-theme">
+          {% for offer in offer_data %}
+          <div class="product pro-equal" data-class="product">
+            <div class="bookmark pro-save"><span>
+                {{offer.offer_percentage|floatformat:"0"}}% OFF
+              </span>
+            </div>
+            <a href="{% url 'web:add_to_wishlist' %}" data-id="add-to-wishlist" title="Add To Wishlist"
+              class="wishlist awish {% if offer.varient_pk|check_color_wish:request %} active {% elif offer.product_pk|check_color_wish:request %} active {% endif %}"
+              {% if offer.varient_pk %} data-pk="{{offer.varient_pk}}" {% else %} data-pk="{{offer.product_pk}}"
+              {% endif %}></a>
+            <a href="{% url 'web:single_product' pk=offer.product_pk %}" class="thumb pro-img">
+              {% if offer.image_url %}
+              <img src="{{offer.image_url}}" alt="{{offer.product}}">
+              {% else %}
+              <img src="{% static 'web/images/democat1.jpg' %}" alt="product">
+              {% endif %}
+            </a>
+            <div class="product_details">
+              {% if offer.stock <= 0 %}
+              <span class="status" style="color:rgb(170, 23, 19)">Not Available</b></span>
+              {% else %}
+              <span class="status" style="color: #138021e0;">Available</b></span>
+              {% endif %}
+              <h3 class="offer_name"><a href="{% url 'web:single_product' pk=offer.product_pk %}"
+                  class="">{% if offer.unit_type  %} {{offer.product}}
+                  {% if offer.count != None and offer.count != "" and offer.count != " " and offer.count != "  " %} -
+                  {{offer.count}} Count {% endif %}
+                  {% if offer.size != None and offer.size != "" and offer.size != " " and offer.size != "  "%} -
+                  {{offer.size|title}} Size {% endif %}
+                  {% if offer.flavour != None and offer.flavour != "" and offer.flavour != " " and offer.flavour != "  "%}
+                  -
+                  {{offer.flavour}} Flavour {% endif %} - {{offer.unit_type}} {% else %} {{offer.product}} -
+                  {{offer.title}}
+                  {% if offer.count != None and offer.count != "" and offer.count != " " and offer.count != "  " %} -
+                  {{offer.count}} Count {% endif %}
+                  {% if offer.size != None and offer.size != "" and offer.size != " " and offer.size != "  " %} -
+                  {{offer.size|title}} Size {% endif %}
+                  {% if offer.flavour != None and offer.flavour != "" and offer.flavour != " " and offer.flavour != "  " %}
+                  - {{offer.flavour}} Flavour {% endif %} {% endif %}</a></h3>
+              <span class="price">
+                <del class="pro-mrp"><i class="currency ">₹</i>{% if offer.varient_mrp %} {{offer.varient_mrp}}
+                  {% else %} {{offer.price}} {% endif %} </del>
+                <b class="pro-price"><i class="currency">₹</i>{{offer.offer_price}}</b>
+              </span>
+              <p class="save-pr">
+                <b class="save-pri"> You Save <i class="currency">₹</i> {% if offer.varient_save_price %}
+                  {{offer.varient_save_price}} {% else %} {{offer.saved_price}} {% endif %} </b>
+              </p>
+            </div>
+            <div class="quantity">
+              <div class="q_minus">
+                <span class="q_control" data-multi="-1">-</span>
+              </div>
+              <div class="q_input">
+                <input id="qty_change" type="text" class="quntity-input"
+                  value="{% if offer.varient_pk %} {{offer.varient_pk|check_qty_in_cart:request}} {% else %} {{offer.product_pk|check_qty_in_cart:request}} {% endif %}" />
+                <b class="value">Qty</b>
+              </div>
+              <div class="q_plus">
+                <span class="q_control" data-multi="1">+</span>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <a href="{% url 'web:add_cart' %}" title="Add To Cart"
+              class="add_to_cart acart {% if offer.varient_pk|check_color_cart:request %} active {% elif offer.product_pk|check_color_cart:request %} active {% endif %}"
+              data-id="add-to-cart" {% if offer.varient_pk %} data-pk="{{offer.varient_pk}}" {% else %}
+              data-pk="{{offer.product_pk}}" {% endif %}></a>
+          </div>
+          <!--[.product]-->
+          {% endfor %}
+
+        </div>
+        <!--[products_slide]-->
+      </div>
+    </div>
+  </div> <!-- [.green_bg] -->
+</section>
+<!--[featured_products]-->
+{% endif %}
+<section id="content_section">
+  <div class="container">
+    <p>Contact Us</p>
+    <div class="button">
+      Phone number: <b>9322500600</b>
+    </div>
+  </div>
+</section>
+<!--[#content_section]-->
+{% if popular_products %}
+<section id="farm_fresh_products">
+  <div class="container head_title">
+    <div class="row">
+      <div class="col-md-6 col-sm-8">
+        <div class="row">
+          <h2 class="title">
+            <small>Products</small>
+            <b>Popular Products</b>
+          </h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-4">
+        <div class="row text-right">
+          <a class="more" href="{% url 'web:product_list' %}?type=popular " title="See All">See all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="green_bg">
+    <div class="container">
+      <div class="row">
+        <div class="products_slide same_arrow owl-carousel owl-theme">
+          {% if popular_products %}
+          {% for item in popular_products %}
+          <div class="product pro-equal" data-class="product">
+            {% if item.percent > 0 %}
+            <div class="bookmark pro-save">
+              <span>
+                {{item.percent|floatformat:"0"}}% OFF
+              </span>
+            </div>
+            {% else %}
+            <div class="bookmark pro-save" style="display: none;">
+              <span>
+              </span>
+            </div>
+            {% endif %}
+            <a href="{% url 'web:add_to_wishlist' %}" data-id="add-to-wishlist" title="Add To Wishlist"
+              class="wishlist awish {% if item.pk|check_color_wish:request %} active {% endif %}"
+              data-pk="{{item.pk}}"></a>
+            <a href="{% url 'web:single_product' pk=item.pk %}" class="thumb pro-img">
+              {% if item.image %}
+              <img src="{{item.image.url}}" alt="{{item.name}}">
+              {% else %}
+              <img src="{% static 'web/images/democat1.jpg' %}" alt="product">
+              {% endif %}
+            </a>
+            <div class="product_details">
+              {% if item.stock <= 0 %}
+              <span class="status" style="color:rgb(170, 23, 19)">Not Available</b></span>
+              {% else %}
+              <span class="status" style="color: #138021e0;">Available</b></span>
+              {% endif %}
+              <h3 class="popular_name"><a href="{% url 'web:single_product' pk=item.pk %}"
+                  class="pro-name">{{item.name}}
+                  {% if item.count != None and item.count != "" and item.count != " " and item.count != "  "  %} -
+                  {{item.count }} Count {% endif %}
+                  {% if item.size != None and item.size != "" and item.size != " " and item.size != "  " %}-
+                  {{item.size|title}} Size {% endif %}
+                  {% if item.flavour != None and item.flavour != "" and item.flavour != " " and item.flavour != "  " %}-
+                  {{item.flavour}} Flavour {% endif %}</a></h3>
+              <span class="price">
+                <b class="pro-price"><i class="currency">₹</i>{{item.price}}</b>
+                <del class="pro-mrp"><i class="currency ">₹</i>{{item.mrp}}</del>
+              </span>
+              {% if item.saved_price > 0 %}
+              <p class="save-pr ">
+                <b class="save-pri"> You Save <i class="currency">₹</i> {{item.saved_price}}</b>
+              </p>
+              {% else %}
+              <p class="save-pr ">
+                <b class="save-pri"></b>
+              </p>
+              {% endif %}
+            </div>
+            <div class="panel-body">
+              <div class="col-sm-12">
+                <select href="{% url 'products:get_product_varient_data' %}" data-id="get-varient-data"
+                  name="payment_type" id="id_payment_type" class="form-control">
+                  <option class="main_pro" value="{{item.pk}}">{{item.unit_type}}</option>
+                  {% for i in item.variations %}
+                  <option value="{{i.pk}}">{{i}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="quantity">
+              <div class="q_minus">
+                <span class="q_control" data-multi="-1">-</span>
+              </div>
+              <div class="q_input">
+                <input id="qty_change" type="text" class="quntity-input"
+                  value="{{item.pk|check_qty_in_cart:request}}" />
+                <b class="value">Qty</b>
+              </div>
+              <div class="q_plus">
+                <span class="q_control" data-multi="1">+</span>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <a href="{% url 'web:add_cart' %}" title="Add To Cart"
+              class="add_to_cart acart {% if item.pk|check_color_cart:request %} active {% endif %}"
+              data-id="add-to-cart" data-pk="{{item.pk}}"></a>
+          </div>
+          <!--[.product]-->
+          {% endfor %}
+          {% endif %}
+        </div>
+        <!--[products_slide]-->
+      </div>
+    </div>
+  </div> <!-- [.green_bg] -->
+</section>
+{% endif %}
+<!-- [#featured_products]-->
+<section class="product_section">
+  <div class="container head_title">
+    <div class="row">
+      <div class="col-md-6 col-sm-8">
+        <div class="row">
+          <h2 class="title">
+            <small>Products</small>
+            <b>Latest Product</b>
+          </h2>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-4">
+        <div class="row text-right">
+          <a class="more" href="{% url 'web:product_list' %}?type=latest" title="See All">See all</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="orange_bg">
+    <div class="container">
+      <div class="row">
+        <div class="products_slide same_arrow owl-carousel owl-theme">
+          {% if latest_product %}
+          {% for item in latest_product %}
+          <div class="product pro-equal" data-class="product">
+            {% if item.percent > 0 %}
+            <div class="bookmark pro-save">
+              <span>
+                {{item.percent|floatformat:"0"}}% OFF
+              </span>
+            </div>
+            {% else %}
+            <div class="bookmark pro-save" style="display: none;">
+              <span>
+              </span>
+            </div>
+            {% endif %}
+            <a href="{% url 'web:add_to_wishlist' %}" data-id="add-to-wishlist" title="Add To Wishlist"
+              class="wishlist awish {% if item.pk|check_color_wish:request %} active {% endif %}"
+              data-pk="{{item.pk}}"></a>
+            <a href="{% url 'web:single_product' pk=item.pk %}" class="thumb pro-img">
+              {% if item.image %}
+              <img src="{{item.image.url}}" alt="{{item.name}}">
+              {% else %}
+              <img src="{% static 'web/images/democat1.jpg' %}" alt="product">
+              {% endif %}
+            </a>
+            <div class="product_details">
+              {% if item.stock <= 0 %}
+              <span class="status" style="color:rgb(170, 23, 19)">Not Available</b></span>
+              {% else %}
+              <span class="status" style="color: #138021e0;">Available</b></span>
+              {% endif %}
+              <h3 class="latest_name"><a href="{% url 'web:single_product' pk=item.pk %}" class="pro-name">{{item.name}}
+                  {% if item.count != None and item.count != "" and item.count != " " and item.count != "  "  %} -
+                  {{item.count }} Count {% endif %}
+                  {% if item.size != None and item.size != "" and item.size != " " and item.size != "  " %}-
+                  {{item.size|title}} Size {% endif %}
+                  {% if item.flavour != None and item.flavour != "" and item.flavour != " " and item.flavour != "  " %}-
+                  {{item.flavour}} Flavour {% endif %}</a></h3>
+              <span class="price">
+                <b class="pro-price"><i class="currency">₹</i>{{item.price}}</b>
+                <del class="pro-mrp"><i class="currency ">₹</i>{{item.mrp}}</del>
+              </span>
+              {% if item.saved_price > 0 %}
+              <p class="save-pr ">
+                <b class="save-pri"> You Save <i class="currency">₹</i> {{item.saved_price}}</b>
+              </p>
+              {% else %}
+              <p class="save-pr ">
+                <b class="save-pri"></b>
+              </p>
+              {% endif %}
+            </div>
+            <div class="panel-body">
+              <div class="col-sm-12">
+                <select href="{% url 'products:get_product_varient_data' %}" data-id="get-varient-data"
+                  name="payment_type" id="id_payment_type" class="form-control">
+                  <option class="main_pro" value="{{item.pk}}">{{item.unit_type}}</option>
+                  {% for i in item.variations %}
+                  <option value="{{i.pk}}">{{i}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="quantity">
+              <div class="q_minus">
+                <span class="q_control" data-multi="-1">-</span>
+              </div>
+              <div class="q_input">
+                <input id="qty_change" type="text" class="quntity-input"
+                  value="{{item.pk|check_qty_in_cart:request}}" />
+                <b class="value">Qty</b>
+              </div>
+              <div class="q_plus">
+                <span class="q_control" data-multi="1">+</span>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <a href="{% url 'web:add_cart' %}" title="Add To Cart"
+              class="add_to_cart acart {% if item.pk|check_color_cart:request %} active {% endif %}"
+              data-id="add-to-cart" data-pk="{{item.pk}}"></a>
+          </div>
+          <!--[.product]-->
+          {% endfor %}
+          {% endif %}
+        </div>
+        <!--[products_slide]-->
+      </div>
+    </div>
+  </div> <!-- [.green_bg] -->
+</section>
+<!--[.product_section]-->
+<div id="snackbar"></div>
+<style>
+  .pro-img {
+    width: 100%;
+    height: 292px;
+    display: inline-block;
+  }
+
+  .pro-img img {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 360px) {
+    .pro-img {
+      height: 226px;
+    }
+  }
+</style>
+<script>
+  $('select[name="payment_type"]').change(function () {
+    $this = $(this);
+    var pk = $(this).val();
+    if (pk) {
+      $parent = $this.parents('div[data-class ="product"]');
+      $parent.find('a[data-id="add-to-cart"]').attr('data-pk', pk)
+      $parent.find('a[data-id="add-to-wishlist"]').attr('data-pk', pk)
+    }
+    else {
+      $parent = $this.parents('div[data-class ="product"]');
+      $parent.find('a[data-id="add-to-cart"]').attr('data-pk', pk)
+      $parent.find('a[data-id="add-to-wishlist"]').attr('data-pk', pk)
+    };
+  });
+  $(document).on("click", 'a[data-id="add-to-cart"], a[data-id="add-to-wishlist"]',
+    function (e) {
+      e.preventDefault();
+
+      python = '{% if not user.is_authenticated %}'
+      window.location.href = "{% url 'web:login' %}?next={% url 'web:single_product' pk=instance.pk %}"
+      python = '{% else %}'
+
+      $this = $(this);
+      var url = $(this).attr("href");
+      var isReload = $this.hasClass("reload");
+      let id = $(this).attr("data-pk");
+      let qty = $(this).parents('.product').find('#qty_change').val()
+      let parent = $(this).parents('.product')
+      console.log('id')
+      console.log(id)
+      console.log('qty')
+      console.log(qty)
+      $.ajax({
+
+        type: "GET",
+        url: url,
+        dataType: "json",
+        data: {
+          pk: id,
+          qty: qty
+        },
+
+        success: function (data) {
+          console.log('success')
+          var status = data["status"];
+          var message = data["message"];
+          var cart_item_count = data["cart_item_count"];
+          var wishlist_item_count = data["wishlist_item_count"];
+
+          console.log('cart_item_count')
+          console.log('wishlist_item_count')
+
+          console.log(cart_item_count)
+          console.log(wishlist_item_count)
+
+          if (message == "Added to Wishlist") {
+            parent.find('.awish').addClass('active');
+          } else if (message == "Added to Cart") {
+            parent.find('.acart').addClass('active');
+          } else if (message == "Removed from Wishlist") {
+            parent.find('.awish').removeClass('active');
+          }
+
+          $("#snackbar").html(message);
+          ShowSnackBar();
+          checkCartAnsWishlist()
+          $("header wishlist_count span").html(wishlist_item_count);
+          $("header cart_count span").html(cart_item_count);
+          // location.reload();
+        },
+
+        error: function (data) {
+          console.log('error')
+          var title = "An error occurred";
+          var message = "An error occurred. Please try again later.";
+          ShowSnackBar(title, message, "error");
+        }
+      });
+      python = '{% endif %}'
+    }
+  );
+
+  $(document).on("click", 'select[name="payment_type"]', function (e) {
+    e.preventDefault();
+
+    $this = $(this);
+    var url = $(this).attr("href");
+    $parent = $this.parents('div[data-class ="product"]');
+    let id = $this.val()
+    var isReload = $this.hasClass("reload");
+    $.ajax({
+      type: "GET",
+      url: url,
+      dataType: "json",
+      data: {
+        pk: id
+      },
+
+      success: function (data) {
+        var status = data["status"];
+        var message = data["message"];
+        var name = data['name'];
+        var cart_qty = data['cart_qty'];
+        var count = data['count'];
+        var flavour = data['flavour'];
+        var size = data['size'];
+        var price = data['price'];
+        var image = data['image'];
+        var pk = data['pk'];
+        var item_in_cart = data['item_in_cart'];
+        var item_in_wish = data['item_in_wish'];
+
+        var stock = data['stock'];
+        var mrp = data['mrp'];
+        var save_amount = mrp - price;
+        var percent = data['percent'];
+        save_amount = save_amount.toFixed(2)
+
+        if (save_amount <= 0) {
+          $parent.find('.save-pr .save-pri').html(``);
+        }
+        else {
+          $parent.find('.save-pr .save-pri').html(`You Save <i class="currency">₹</i> ${save_amount}`);
+        }
+
+        if (percent <= 0) {
+          $parent.find('.pro-save').hide();
+        }
+        else {
+          $parent.find('.pro-save').show();
+          $parent.find('.pro-save span').html(`${percent}% OFF`);
+        }
+        new_name = ""
+        if (name != "") {
+          new_name = `${name}`
+        }
+        if (size != "None" && size != "" && size != " ") {
+          new_name += `- ${size} Size `
+        }
+        if (flavour != "None" && flavour != "" && flavour != " ") {
+          new_name += `- ${flavour} Flavour`
+        }
+        if (count != "None" && count != "" && count != " ") {
+          new_name += `- ${count} Count`
+        }
+
+        if (item_in_cart == "true") {
+          $parent.find('.acart').addClass('active');
+          $parent.find('.awish').addClass('active');
+        }
+        else {
+          $parent.find('.acart').removeClass('active');
+
+        }
+
+
+        if (item_in_wish == "true") {
+          $parent.find('.awish').addClass('active');
+        }
+        else {
+          $parent.find('.awish').removeClass('active');
+
+        }
+
+        if (stock <= 0) {
+          $parent.find('.status').html('Not Available');
+          $parent.find('.status').css('color', '#AA1713');
+        } else {
+          $parent.find('.status').html('Available');
+          $parent.find('.status').css('color', '#138021e0');
+        }
+        $parent.find('.pro-price').html(`₹ ${price}`);
+        $parent.find('.pro-mrp').html(`₹ ${mrp}`);
+        $parent.find('.pro-name').html(new_name);
+        $parent.find('.pro-add-cart').attr('data-pk', pk);
+        $parent.find('.pro-img img').attr('src', image);
+        $parent.find('#qty_change').val(cart_qty);
+      },
+
+      error: function (data) {
+        var title = "An error occurred";
+        var message = "An error occurred. Please try again later.";
+        $("#snackbar").html(message);
+        ShowSnackBar();
+      }
+    });
+  }
+  );
+</script>
+{% endblock %}

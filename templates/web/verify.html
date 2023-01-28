@@ -1,0 +1,59 @@
+{% extends "web/base.html" %}
+{% load i18n %}
+
+{% block title %} Verify OTP {% endblock %}
+
+{% block content %}
+{% load static %}
+
+<!-- Main Wrapper -->
+<div class="page-wrapper ml-0 pb-6" style="background-color: #fff;">
+
+
+    <div class="account-content">
+        <div class="container">
+
+            <div class="account-box">
+                <div class="tab-content">
+                    <div class="account-wrapper">
+                        <h3 class="account-title">Verify</h3>
+                        <p class="account-subtitle">Please verify otp to continue</p>
+                        {% if form.non_field_errors %}
+                        <div class="palette-Red-500 text m-b-20">
+                            {{form.non_field_errors}}
+                        </div>
+                        <br />
+                        {% endif %}
+                        <form action="{% url 'web:verify' pk=user_detail.pk %}" method="post" style="width: 25%;">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.otp }}
+                                {% if form.otp.errors %}
+                                <span class="error">{{ form.otp.errors.as_text }}</span>
+                                {% endif %}
+                                {% if message %}
+                                <span class="error" {% if message_status %}
+                                    style="display: inline-block; margin-top: 10px;color: green;" {% else %}
+                                    style="display: inline-block; margin-top: 10px;color: red;"
+                                    {% endif%}>{{message}}</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group text-center">
+                                <input type="hidden" name="next" value="{{ next }}" />
+                                <button type="submit" class="btn btn-primary btn-block btn-lg">Verify</button>
+                            </div>
+                            <div class="form-group">
+                                <a href="{% url 'web:resend_otp' pk=user_detail.pk %}" class="text">Resent otp</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+{% endblock %}

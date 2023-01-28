@@ -1,0 +1,65 @@
+{% extends "web/base.html" %}
+{% load i18n %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+{% load static %}
+<div class="main-wrapper">
+    <div class="account-content">
+        <div class="container">
+
+            <div class="account-box">
+                <div class="account-wrapper">
+
+                    <div class="lb-body">
+                        <p class="message center" style="text-align: center;">You are successfully logged out. <br />
+                            <a class="color_link center" href="{% url 'web:login' %}">Login Again</a><br />
+                            <a class="color_link center" href="{% url 'web:index' %}">Go to Home</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .account-page {
+        align-items: center;
+        display: flex;
+    }
+    .main-wrapper {
+        padding: 120px 0;
+    }
+    .account-page .main-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+    .account-content {
+        padding: 20px 0;
+    }
+    .account-box {
+        background-color: #fff;
+        border: 1px solid #ededed;
+        border-radius: 4px;
+        box-shadow: 0 0px 6px 1px rgba(0, 0, 0, 0.2);
+        margin: 0 auto;
+        overflow: hidden;
+        width: 480px;
+    }
+    .account-wrapper {
+        padding: 30px;
+    }
+    p {
+        font-weight: bold;
+        margin-top: 0;
+        margin-bottom: 1rem;
+    }
+    .lb-body a {
+        color: #AA1713;
+    }
+</style>
+
+{% endblock %}

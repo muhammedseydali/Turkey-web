@@ -1,0 +1,269 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %}
+{% load main_template_tags %}
+
+<section id="banner" style="background-image: url('../../static/web/images/bags.jpg');">
+	<div class="container">
+		<h1 class="title">My Account</h1>
+	</div>
+	<div class="breadcrumbs">
+		<ul>
+			<li><a href="{% url 'web:index' %}">Home</a></li>
+			<li><span>Wishlist</span></li>
+		</ul>
+	</div>
+</section>
+<!--[#banner]-->
+<section id="dashboard">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4" id="side_menu">
+				<ul>
+					<li>
+						<a href="{% url 'web:my_account' %}" title="My Account">
+							<i class="svgicon"><img src="{% static 'web/images/dashboard.svg' %}" alt="My Account"></i>
+							My Account
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'web:my_orders' %}" title="My Orders">
+							<i class="svgicon"><img src="{% static 'web/images/shopping-bag.svg' %}"
+									alt="My Orders"></i>
+							My Orders
+						</a>
+					</li>
+					<!-- <li>
+							<a href="{% url 'web:my_wallet' %}">
+								<i class="svgicon"><img src="{% static 'web/images/wallet.svg' %}" alt="My Wallet"></i>
+								My Wallet
+							</a>
+						</li> -->
+					<li>
+						<a href="{% url 'web:my_rewards' %}" title="My Rewards">
+							<i class="svgicon"><img src="{% static 'web/images/coins.svg' %}" alt="My Rewards"></i>
+							My Rewards
+						</a>
+					</li>
+					<li class="active">
+						<a href="{% url 'web:my_wishlist' %}" title="My Wishlist">
+							<i class="svgicon"><img src="{% static 'web/images/wishlist-white.svg' %}"
+									alt="My Wishlist"></i>
+							My Wishlist
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'web:my_cart' %}" title="My Cart">
+							<i class="svgicon"><img src="{% static 'web/images/shopping-cart-white.svg' %}"
+									alt="My Cart"></i>
+							My Cart
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'web:my_address' %}" title="My Address">
+							<i class="svgicon"><img src="{% static 'web/images/005-location.svg' %}"
+									alt="My Address"></i>
+							My Address
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!--[#side_menu]-->
+			<div id="main_content" class="col-md-8">
+				<div class="head">
+					<h4><b>Wishlist</b></h4>
+				</div>
+				{% if wishlist_items %}
+				<div class="content">
+					<div id="myorders_list" class="wishlist_items">
+						{% for wishlist_item in wishlist_items %}
+						<div class="order_details product-layout">
+							{% if wishlist_item.product_varient.image %}
+							<a href="{% url 'web:single_product' pk=wishlist_item.product.pk %}" class="thumb">
+								<img src="{{wishlist_item.product_varient.image.url}}" alt="">
+							</a>
+							{% elif wishlist_item.item.image %}
+							<a href="{% url 'web:single_product' pk=wishlist_item.item.pk %}" class="thumb">
+								<img src="{{wishlist_item.item.image.url}}" alt="">
+							</a>
+							{% else%}
+							<a href="{% url 'web:single_product' pk=wishlist_item.item.pk %}" class="thumb">
+								<img src="{% static 'web/images/democat1.jpg' %}" alt="">
+							</a>
+							{% endif %}
+							{% if wishlist_item.product_varient %}
+							<h5>{{wishlist_item.item.name}} {% if wishlist_item.product_varient.count %}-
+								{{wishlist_item.product_varient.count}} Count {% endif %}
+								{% if wishlist_item.product_varient.size %}-
+								{{wishlist_item.product_varient.size|title}} Size {% endif %}
+								{% if wishlist_item.product_varient.flavour %}-
+								{{wishlist_item.product_varient.flavour}} Flavour {% endif %} -
+								{{wishlist_item.product_varient.title}}</h5>
+							{% else %}
+							<h5>{{wishlist_item.item.name}} {% if wishlist_item.item.count %}-
+								{{wishlist_item.item.count}} Count {% endif %} {% if wishlist_item.item.size %}-
+								{{wishlist_item.item.size|title}} Size {% endif %} {% if wishlist_item.item.flavour %}-
+								{{wishlist_item.item.flavour}} Flavour {% endif %} - {{wishlist_item.item.unit_type}}
+							</h5>
+							{% endif %}
+							<p class="price">
+								<i class="currency">₹</i> {{wishlist_item.price}}
+							</p>
+							<span class="qty">
+								<div class="quantity">
+									<div class="q_minus">
+										<span class="q_control" data-multi="-1">-</span>
+									</div>
+									<div class="q_input">
+										<input id="qty_change" type="text" class="quntity-input"
+											value="{{wishlist_item.item.pk|check_qty_in_cart:request}}" />
+										<b class="value">Qty</b>
+									</div>
+									<div class="q_plus">
+										<span id="qty_change" class="q_control" data-multi="1">+</span>
+									</div>
+									<button type="button" style="margin-left: 15px;" title="Add to Cart"
+										href="{% url 'web:add_cart' %}" data-id="add-to-cart"
+										{% if wishlist_item.product_varient %}
+										data-pk="{{wishlist_item.product_varient.pk}}" {% else %}
+										data-pk="{{wishlist_item.item.pk}}" {% endif %}
+										class="btn btn-primary awcart {% if wishlist_item.item.pk|check_color_cart:request %} active {% endif %}"><i
+											class="fa fa-shopping-cart"><span class="ca-text"
+												style="font-family: Poppins; font-size: 14px; margin-left: 5px;">Add
+												Cart</span> </i>
+									</button>
+									<div class="clearfix"></div>
+								</div>
+							</span>
+							<hr>
+							<a class="delete" href="{% url 'web:delete_wishlist_item' pk=wishlist_item.pk %}"
+								data-id="delete-wishlist-item"></a>
+						</div>
+						<!--[.order_details]-->
+						{% endfor %}
+					</div>
+					<!--[.wishlist_items]-->
+				</div>
+				{% else %}
+				<div class="nothing_found">
+					<!-- <div class="image">
+									<img src="{% static 'web/images/cartempty.jpeg' %}" alt="Image" title="Nothing Found" />
+								</div> -->
+					<h3>Sorry, no item in wishlist</h3>
+				</div>
+				{% endif %}
+			</div>
+			<!--[main_content]-->
+		</div>
+	</div>
+</section>
+<!--[dashboard]-->
+<div id="snackbar"></div>
+<style>
+	.quantity {
+		width: auto;
+	}
+
+	.awcart.active {
+		background-color: #EB772E;
+	}
+</style>
+<script>
+	$(document).ready(function () {
+		$('.product-layout').each(function () {
+			if ($(this).find('.awcart').hasClass('active')) {
+				$(this).find('.awcart span').html('Update Cart');
+			}
+		});
+	});
+	$(document).on("click", 'button[data-id="add-to-cart"], button[data-id="add-to-wishlist"]', function (e) {
+		e.preventDefault();
+
+		python = '{% if not user.is_authenticated %}'
+		window.location.href = "{% url 'web:login' %}?next={% url 'web:single_product' pk=instance.pk %}"
+		python = '{% else %}'
+
+		$this = $(this);
+		var url = $(this).attr("href");
+		var isReload = $this.hasClass("reload");
+		let id = $(this).attr("data-pk");
+		let qty = $(this).parents('.product-layout').find('#qty_change').val()
+		console.log(qty, "qtyyyyyyyyyyyyyyyyyyyyyyyy")
+		let parent = $(this).parents('.product-layout')
+
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			data: {
+				pk: id,
+				qty: qty
+			},
+
+			success: function (data) {
+				var status = data["status"];
+				var message = data["message"];
+				var cart_item_count = data["cart_item_count"];
+				var wishlist_item_count = data["wishlist_item_count"];
+
+				if (message == "Added to Cart") {
+					parent.find('.awcart').addClass('active');
+					parent.find('.awcart span').html('Update Cart');
+				} else if (message == "Cart Updated") {
+					parent.find('.awcart').addClass('active');
+					parent.find('.awcart span').html('Update Cart');
+				}
+				$("#snackbar").html(message);
+				ShowSnackBar();
+				checkCartAnsWishlist();
+				$("#head header span.anticon small.count b").html(cart_item_count);
+				// location.reload();
+			},
+
+			error: function (data) {
+				var title = "An error occurred";
+				var message = "An error occurred. Please try again later.";
+				swal(title, message, "error");
+			}
+		});
+		python = '{% endif %}'
+	}
+	);
+
+	$(document).on("click", 'a[data-id="delete-wishlist-item"]', function (e) {
+		e.preventDefault();
+
+		python = '{% if not user.is_authenticated %}'
+		window.location.href = "{% url 'web:login' %}?next={% url 'web:single_product' pk=instance.pk %}"
+		python = '{% else %}'
+
+		$this = $(this);
+		var url = $(this).attr("href");
+		var isReload = $this.hasClass("reload");
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			data: {
+
+			},
+
+			success: function (data) {
+				var status = data["status"];
+				var message = data["message"];
+
+				$("#snackbar").html(message);
+				ShowSnackBar();
+				checkCartAnsWishlist();
+				location.reload();
+			},
+
+			error: function (data) {
+				var title = "An error occurred";
+				var message = "An error occurred. Please try again later.";
+				swal(title, message, "error");
+			}
+		});
+		python = '{% endif %}'
+	}
+	);
+</script>
+{% endblock %}

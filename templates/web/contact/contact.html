@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+   <!-- Page Content -->
+   <div class="content container-fluid">
+      <!-- Page Header -->
+      <div class="page-header">
+         <div class="row">
+            <div class="col-sm-12">
+               <h3 class="page-title">{{title|title}}</h3>
+               <ul class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{% url 'app' %}">Dashboard</a></li>
+                  <li class="breadcrumb-item active">{{title|title}}</li>
+               </ul>
+            </div>
+
+            <div class="col-auto float-right ml-auto">
+               <h3 class="ah-label hidden-xs palette-White text">{{instance.auto_id}} - {{instance.product}}</h3>
+
+               <ul class="personal-info row">
+                   {% if instance.creator == request.user  %}
+   
+                   <li class="col">
+                       <a title="Edit Contact" href="{% url 'web:edit_contact' pk=instance.pk %}" class="edit-icon">
+                           <i class="fa fa-pencil"></i>
+                       </a>
+                   </li>
+                   <li class="col">
+                       <a title="Delete Contact" data-id="{{instance.pk}}" data-text="{{confirm_delete_message}}"
+                           data-title="Are you sure?" href="{% url 'web:delete_contact' pk=instance.pk %}"
+                           class="action-button redirect delete-icon edit-icon">
+                           <i class="fa fa-trash"></i>
+                       </a>
+                   </li>
+                   {% endif %}
+               </ul>
+           </div>
+         </div>
+      </div>
+      <!-- /Page Header -->
+
+      <div class="tab-content">
+         <!-- Profile Info Tab -->
+         <div id="emp_profile" class="pro-overview tab-pane fade show active">
+            <div class="row">
+               <div class="col-md-6 d-flex">
+                  <div class="card profile-box flex-fill">
+                     <div class="card-body">
+                        
+                        <ul class="personal-info">
+                           <li>
+                              <div class="title">Phone</div>
+                              <div class="text">{{instance.phone}}</div>
+                           </li>
+                           <li>
+                              <div class="title">Address</div>
+                              <div class="text">{{instance.address|linebreaks}}</div>
+                           </li>
+                           <li>
+                              <div class="title">Whatsapp</div>
+                              <div class="text">{{instance.whatsapp}}</div>
+                           </li>
+                           <li>
+                              <div class="title">Instagram</div>
+                              <div class="text">{{instance.instagram}}</div>
+                           </li>
+                           <li>
+                              <div class="title">Facebook</div>
+                              <div class="text">{{instance.facebook}}</div>
+                           </li>
+                     </div>
+                  </div>
+               </div>
+               
+            </div>
+         </div>
+         <!-- /Profile Info Tab -->
+      </div>
+   </div>
+</div>
+<!-- /Page Wrapper -->
+
+{% endblock %}

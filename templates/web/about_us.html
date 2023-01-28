@@ -1,0 +1,34 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% block content %}
+	<section id="banner" style="background-image: url('../../static/web/images/about-banner.jpg');">
+		<div class="container">
+			<h1 class="title">About Us</h1>
+		</div>
+		<div class="breadcrumbs">
+			<ul>
+				<li><a href="{% url 'web:index' %}">Home</a></li>
+				<li><span>About Us</span></li>
+			</ul>
+		</div>
+	</section><!--[#banner]-->
+	<section id="single_page">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-8 col-sm-6 mb30">
+					<h2 class="single_title">About Us</h2>
+					{% if about %}
+					<p>{{about.description|linebreaks}}</p>
+					{% else %}
+					<p>Kerala’s most convenient online grocery channel
+						Day Bazar makes your online shopping even simpler. No more hassles of sweating it out in crowded markets,shops & supermarkets - now shop from the comfort of your home<br />
+						We offer you convenience of shopping everything that you need for your home - be it fresh fruits & vegetables, rice, sugar, oil, packaged food, dairy item,  household cleaning items & personal care products from a single virtual store.</p>
+					{% endif %}
+				</div>
+				<div class="col-md-4 col-sm-6">
+					<img src="{% static 'web/images/about-side-image.png' %}" alt="about day bazar">
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

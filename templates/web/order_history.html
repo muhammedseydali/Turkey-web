@@ -1,0 +1,262 @@
+{% extends 'web/base.html' %} {% block content %} {% load static %}
+{% load web_template_tags %}
+
+	<section id="banner" style="background-image: url('../../static/web/images/order_box.jpg');">
+		<div class="container">
+			<h1 class="title">My Account</h1>
+		</div>
+		<div class="breadcrumbs">
+			<ul>
+				<li><a href="{% url 'web:index' %}">Home</a></li>
+				<li><span>Orders</span></li>
+			</ul>
+		</div>
+	</section><!--[#banner]-->
+	<section id="dashboard">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4" id="side_menu">
+					<ul>
+						<li class="">
+							<a href="{% url 'web:my_account' %}" title="My Account">
+								<i class="svgicon"><img src="{% static 'web/images/dashboard.svg' %}" alt="My Account"></i>
+								My Account
+							</a>
+						</li>
+						<li class="active" >
+							<a href="{% url 'web:my_orders' %}" title="My Orders">
+								<i class="svgicon"><img src="{% static 'web/images/shopping-bag.svg' %}" alt="My Orders"></i>
+								My Orders
+							</a>
+						</li>
+						<!-- <li>
+							<a href="{% url 'web:my_wallet' %}">
+								<i class="svgicon"><img src="{% static 'web/images/wallet.svg' %}" alt="My Wallet"></i>
+								My Wallet
+							</a>
+						</li> -->
+						<li>
+							<a href="{% url 'web:my_rewards' %}" title="My Rewards">
+								<i class="svgicon"><img src="{% static 'web/images/coins.svg' %}" alt="My Rewards"></i>
+								My Rewards
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_wishlist' %}" title="My Wishlist">
+								<i class="svgicon"><img src="{% static 'web/images/wishlist-white.svg' %}" alt="My Wishlist"></i>
+								My Wishlist
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_cart' %}" title="My Cart">
+								<i class="svgicon"><img src="{% static 'web/images/shopping-cart-white.svg' %}" alt="My Cart"></i>
+								My Cart
+							</a>
+						</li>
+						<li>
+							<a href="{% url 'web:my_address' %}" title="My Address">
+								<i class="svgicon"><img src="{% static 'web/images/005-location.svg' %}" alt="My Address"></i>
+								My Address
+							</a>
+						</li>
+					</ul>
+				</div><!--[#side_menu]-->
+				<div id="main_content" class="col-md-8">
+					<div class="head">
+						<h4><b>Orders</b></h4>
+					</div>
+					<div class="content">
+						<div class="panel-group" id="myorders_list">
+							<!--[panel]-->
+							{% if instances %}
+							{% for item in instances %}
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<a data-toggle="collapse" data-parent="#myorders_list" href="#order_{{forloop.counter}}">
+											<span class="order_id">
+												Order ID: <b>{{ item.order_id }}</b>
+											</span>
+											<span class="delivery_timing">
+												Delivery Timing
+												{% if item.order_status == 'delivered' %}
+												: Delivered
+												{% else %}
+												{{ item.delivery_time|default:"0:00" }}
+												{% endif %}
+											</span>
+										</a>
+									</h4>
+								</div>
+								<div id="order_{{forloop.counter}}" class="panel-collapse collapse">
+									<div class="panel-body">
+										<div class="order_details">
+											{% for sub_order in item|get_sub_order_item %}
+											<div class="order_set">
+												{% if sub_order.product.image %}
+												<a class="thumb">
+													<img src="{{sub_order.product.image.url}}" alt="">
+												</a>
+												{% else %}
+												<a class="thumb">
+													<img src="{% static 'web/images/democat1.jpg' %}" alt="">
+												</a>
+												{% endif %}
+												<h>Product Name: <b>{{sub_order.product}}</b></h5>
+													<p>
+														Unit: <b> {% if sub_order.products_varient %} {{sub_order.products_varient.title|default:""}} {% else %} {{sub_order.product.unit_type|default:""}} {% endif %}</b> 
+													</p>
+												<p>
+													SubTotal: <b>{{sub_order.subtotal}}</b> 
+												</p>
+												<span class="qty">
+													Item Count: <b>{{sub_order.qty}}</b>
+												</span>
+											</div>
+											<hr>
+											<div class="clearfix"></div>
+											{% endfor %}
+											
+
+											<table>
+												<tr>
+													<td>Subtotal</td>
+													<td align="right">
+														<i class="currency">₹</i> {{item.total_amount}}
+													</td>
+												</tr>
+												<tr>
+													<td>Delivery Charge</td>
+													<td align="right">
+														<i class="currency">₹</i>
+														{{item.delivery_charge}}
+														
+													</td>
+												</tr>
+												<tr>
+													<td><h5>Total</h5></td>
+													<td align="right">
+														<i class="currency">₹</i>
+														{{item.get_total_amount}}
+														
+													</td>
+												</tr>
+											</table>
+											
+											<hr>
+											<h5>Track Order</h5>
+											<ul class="track_order">
+												<li class="or-1"><span >Order Placed</span></li>
+												<li class="or-2"><span >Payment Recived</span></li>
+												<li class="or-3"><span >Product Dispatched</span></li>
+												
+												<li class="or-4"><span >In Process</span></li>
+												{% if item.order_status == 'delivered' %}
+												<li class="or-5"><span >Delivered</span></li>
+												{% elif item.order_status == 'cancelled' %}
+												<li class="or-5"><span >Order Cancelled</span></li>
+												{% else %}
+												<li class="or-5"><span >Expected Delivery in {{item.delivery_time|default:"0:00" }}</span></li>
+												{% endif %}
+											</ul>
+												{% if item.order_status == 'pending' %}
+													<style>
+														ul.track_order li.or-1::after{
+															background-color: #3B9350;
+														}
+													</style>
+												{% elif item.order_status == 'packed' %}
+													<style>
+														ul.track_order li.or-3::after{
+															background-color: #3B9350;
+														}
+													</style>
+												{% elif item.order_status == 'shipped' %}
+													<style>
+														ul.track_order li.or-4::after{
+															background-color: #3B9350;
+														}
+													</style>
+												{% elif item.order_status == 'delivered' %}
+													<style>
+														ul.track_order li.or-5::after{
+															background-color: #3B9350;
+														}
+													</style>
+												{% elif item.order_status == 'cancelled' %}
+													<style>
+														ul.track_order li.or-5::after{
+															background-color: #3B9350;
+														}
+													</style>
+												{% endif %}
+												
+											
+											<hr>
+											<div class="row">
+												<div class="col-md-6">
+													
+												</div>
+												<div class="col-md-6 text-right">
+													<!-- <a href="#" class="button_red">
+														In Details
+													</a> -->
+													{% if item.order_status != 'delivered' %}
+													<a href="#" class="button_red" data-toggle="modal" data-target="#cancel_pop{{forloop.counter}}" title="Order Cancel">
+														Cancel Order
+													</a>
+													<div class="modal fade cancel_pops" id="cancel_pop{{forloop.counter}}" tabindex="-1">
+														<div class="modal-dialog">
+															<div class="modal-content">
+																<button type="button" class="close" data-dismiss="modal"></button>
+																<h4 class="popup_title">Cancel Order</h4>
+																<div class="modal-body">
+																	<form action="{% url 'web:cancel_order' pk=item.pk %}" class="ajax redirect reload is_swal" method="POST">
+																		{% if message %}
+																		<div class="text-danger"><strong>{{message}}</strong></div>
+																		{% endif %}
+																		{% csrf_token %} 
+																		<div class="input-group text-left">
+																			<label for="{{ form.sale_category.id_for_label }}">
+																				{{ cancel_form.cancel_reason.label }}
+								
+																					<small class="star text-danger">*</small>
+																			</label>
+																			{{ cancel_form.cancel_reason }}
+																			{% if cancel_form.cancel_reason.errors %}
+																			<span class="error validat text-danger">{{ cancel_form.cancel_reason.errors.as_text }}</span>
+																			{% endif %}
+																		</div>
+																		<div class="input-groups m-t-2">
+																			<input class="submit" type="submit" value="Submit">
+																		</div>
+																	</form>
+																</div>
+															</div>
+														</div>
+													</div>
+													{% endif %}
+												</div>
+											</div>
+										</div>
+										
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+							{% else %}
+							<div class="nothing_found">
+								<!-- <div class="image">
+								<img src="{% static 'web/images/cartempty.jpeg' %}" alt="Image" title="Nothing Found" />
+							</div> -->
+								<h3>Sorry, no orders found</h3>
+							</div>
+							{% endif %}
+							<!--[panel]-->
+						</div> 
+					</div>	
+				</div><!--[main_content]-->
+			</div>
+		</div>
+	</section><!--[dashboard]-->
+{% endblock %}
